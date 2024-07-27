@@ -4,18 +4,20 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
+    "noEmit": true, 
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "preserve", 
+    "typeRoots": ["./types", "./node_modules/@types"],
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+    } 
+  }, 
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "initializeAdmin.ts"],
   "exclude": ["node_modules"]
-}
+} 
+ 
