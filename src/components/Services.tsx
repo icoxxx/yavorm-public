@@ -16,13 +16,11 @@ type Service = {
     description: string;
     tags: {
       name: string;
-      color: string;
     }[];
     image: StaticImageData;
-    source_code_link: string;
   };
 
-const ServiceCard: React.FC<Service & { delay: number }> = ({index, name, description, tags, image, source_code_link, delay})=> {
+const ServiceCard: React.FC<Service & { delay: number }> = ({index, name, description, tags, image, delay})=> {
 
     return(
     <Tilt
@@ -35,19 +33,20 @@ const ServiceCard: React.FC<Service & { delay: number }> = ({index, name, descri
                 <div className='tilt-content'>
                     <Image src={image} alt={name} quality={100} />
                 </div>
-        
-                <div className="home-tilt-text">
-                    <h3>{name}</h3>
-                    <p>{description}</p>
-                </div>
-                <div className='home-tilt-tags'>
-                    {tags.map((tag, index)=>{
-                    return(
-                        <p key={`${tag.name}-${index}`}>
-                        #{tag.name}
-                        </p>
-                    )
-                    })}
+                <div className="home-tilt-text-container">
+                  <div className="home-tilt-text">
+                      <h3>{name}</h3>
+                  </div>
+                  <div className="home-tilt-text"><p>{description}</p></div>
+                  <div className='home-tilt-tags'>
+                      {tags.map((tag, index)=>{
+                      return(
+                          <p key={`${tag.name}-${index}`}>
+                          #{tag.name}
+                          </p>
+                      )
+                      })}
+                  </div>
                 </div>
         </FadeIn>
     </Tilt>
@@ -65,19 +64,15 @@ const Services: React.FC = ()=> {
           tags: [
             {
               name: "DJ",
-              color: "blue",
             },
             {
               name: "техника",
-              color: "green",
             },
             {
               name: "наем",
-              color: "pink",
             },
           ],
           image: cdj3000,
-          source_code_link: "https://github.com/icoxxx/gerena2",
         },
         {
             name: "Организиране на сватбени тържества",
@@ -86,19 +81,15 @@ const Services: React.FC = ()=> {
             tags: [
               {
                 name: "сватба",
-                color: "blue",
               },
               {
                 name: "DJ",
-                color: "green",
               },
               {
                 name: "организиране",
-                color: "pink",
               },
             ],
             image: wedding,
-            source_code_link: "https://github.com/icoxxx/gerena2",
           },
         {
           name: "Озвучителна и осветителна техника под наем",
@@ -107,19 +98,15 @@ const Services: React.FC = ()=> {
           tags: [
             {
               name: "озвучаване",
-              color: "blue",
             },
             {
               name: "осветление",
-              color: "green",
             },
             {
               name: "наем",
-              color: "pink",
             },
           ],
           image: sound$lights,
-          source_code_link: "https://github.com/icoxxx/portfolio-app",
         },
         {
             name: "Организиране на частни събития",
@@ -128,19 +115,15 @@ const Services: React.FC = ()=> {
             tags: [
               {
                 name: "частни",
-                color: "blue",
               },
               {
                 name: "събития",
-                color: "green",
               },
               {
                 name: "DJ",
-                color: "pink",
               },
             ],
             image: djEvent,
-            source_code_link: "https://github.com/icoxxx/portfolio-app",
           },
         {
             name: "Инсталация на звук и осветление",
@@ -149,19 +132,15 @@ const Services: React.FC = ()=> {
             tags: [
               {
                 name: "инсталация",
-                color: "blue",
               },
               {
                 name: "звук",
-                color: "green",
               },
               {
                 name: "осветление",
-                color: "pink",
               },
             ],
             image: console,
-            source_code_link: "https://github.com/icoxxx/portfolio-app",
           },
       ];
 

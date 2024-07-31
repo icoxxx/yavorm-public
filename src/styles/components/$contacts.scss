@@ -1,0 +1,126 @@
+.contact-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    overflow: hidden;
+    height: auto;
+    padding: 30px;
+    @media (max-width: 800px) {
+      flex-direction: column;
+      flex-wrap: wrap;
+      .contact-text-container{
+        flex: auto;
+        width: 100%;
+        height: 600px;
+      }
+      .contact-form{
+        width: 100%;
+      }
+    }
+  }
+
+  .contact-text-container{
+    position: relative;
+    width: 50%;
+    background-color: #151030;
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+    .contact-img-cover{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+        opacity: 0.15;
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .contact-text-wrapper{
+        z-index: 2;
+        padding-top: 40%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+    .contact-text-title{
+        text-transform: uppercase;
+        text-align: center;
+        span{
+            color: #f44336;
+            text-decoration: underline;
+        }
+    }
+    .contact-text-title:nth-child(2){
+        font-size: 13px;
+    }
+    .contact-text-title p:nth-child(2){
+        margin-top: 10px;
+    }
+  }
+  
+  .contact-form {
+    position: relative;
+    width: 50%;
+    background-color: #151030; 
+    padding: 32px;
+    border-radius: 16px; 
+  
+    .section-sub-text, .section-head-text  {
+     color: white;
+    }
+  
+    .contact-form-elements {
+      margin-top: 48px; 
+      display: flex;
+      flex-direction: column;
+      gap: 32px; 
+    }
+  
+    .form-label-contacts {
+      display: flex;
+      flex-direction: column;
+  
+      .label-text-contacts {
+        color: white;
+        font-weight: 500; 
+        margin-bottom: 16px; 
+      }
+  
+      .input-field-contacts {
+        background-color: #2c2c2c; 
+        padding: 16px 24px; 
+        color: white;
+        border-radius: 8px;
+        outline: none;
+        border: none;
+        font-weight: 500; 
+  
+        &::placeholder {
+          color: #7a7a7a; 
+        }
+      }
+    }
+  
+    .submit-button-contacts {
+      background-color: #2c2c2c;
+      padding: 12px 32px; 
+      outline: none;
+      width: fit-content;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+      border-radius: 12px; 
+    }
+  }
+  

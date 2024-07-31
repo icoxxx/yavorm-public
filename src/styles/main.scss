@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,600,700");
+@import './components/$contacts.scss';
 
 *{
     box-sizing: border-box;
@@ -623,6 +624,14 @@ body{
     justify-content: center;
     align-items: center;
     justify-content: space-evenly;
+    .home-tilt-text-container{
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content:space-around;
+    }
     .home-tilt-text{
       text-align: center;
       margin-top: 1.25rem;
@@ -676,6 +685,98 @@ body{
     flex-wrap: wrap; 
     gap: 1.75rem; 
     justify-content: center; 
+  }
+
+  .home-wedding-wrapper{
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+    .home-wedding-white{
+      padding: 70px;
+      width: 50%;
+      height: 100%;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 30px;
+      gap: 20px;
+      p:nth-child(2){
+        font-weight: bold;
+      }
+    }
+    .home-wedding-gray{
+      width: 50%;
+      height: 100%;
+      padding: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 30px;
+      gap: 20px;
+      background: linear-gradient(to right, white, gray);
+      button{
+        cursor: pointer;
+        border-radius: 30px;
+        border: none;
+        padding: 18px 28px;
+        transition: color 0.3s ease-out;
+        text-decoration: none;
+        color: white;
+        background-color: #f44336;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+    }
+  }
+
+  .blogs-wrapper{
+    width: 100%;
+    height: 500px;
+    text-align: center;
+  }
+
+  .contacts-wrapper{
+    position: relative;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 500px) {
+    .home-wedding-wrapper{
+      .home-wedding-white{
+        padding: 30px;
+        h2{
+          font-size: 18px;
+        }
+        p{
+          font-size: 14px;
+        }
+      }
+      .home-wedding-gray{
+        img{
+          width: 60px;
+          height: 60px;
+        }
+        p{
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  @media screen and (max-width: 890px) {
+    .home-wedding-wrapper{
+      flex-direction: column;
+      .home-wedding-white{
+        width: 100%;
+      }
+      .home-wedding-gray{
+        width: 100%;
+        background: linear-gradient(to bottom, white, gray);
+      }
+    }
   }
 
   

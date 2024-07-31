@@ -17,6 +17,9 @@ import 'react-multi-carousel/lib/styles.css';
 import HomeCarousel from "@/components/HomeCarousel";
 import Link from "next/link";
 import Services from "@/components/Services";
+import HomeWedding from "@/components/HomeWedding";
+import Blogs from "@/components/Blogs";
+import Contacts from "@/components/Contacts";
 
 type HomeProps = {
   title: string;
@@ -105,6 +108,18 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
 
             <section className="home-serives-section">
               <Services/>
+            </section>
+
+            <section>
+              <HomeWedding/>
+            </section>
+
+            <section className="blogs-wrapper">
+              <Blogs/>
+            </section>
+
+            <section className="contacts-wrapper">
+              <Contacts/>
             </section>
 
               {items && (

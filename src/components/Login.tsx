@@ -94,7 +94,7 @@ const Login :React.FunctionComponent = ()=> {
               setWrongCredentials(false);
             }
             //setIsAuthenticated(true)
-            closeModal()
+            handleModalClose();
             //window.location.reload();
             //closeModal();
   
