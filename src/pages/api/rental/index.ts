@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import multer from 'multer';
 import { Db,} from 'mongodb';
 import { RequestHandler } from 'express';
-import TestItem from '../../../Models/Test'; 
+import RentalItem from '../../../Models/RentalSchema'; 
 import { connectToDatabase, getGridFSBucket } from '@/lib/apiMiddleware';
 import path from 'path';
 import connectDB from '@/lib/connectMongo';
@@ -10,7 +10,6 @@ import { createRouter, expressWrapper } from "next-connect";
 import cors from 'cors';
 import express from 'express';
 
-import Users from '@/Models/Users';
 
 function staticMiddleware(root: string) {
   return (req: NextApiRequest, res: NextApiResponse, next: any) => {
@@ -62,9 +61,9 @@ const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: D
 
 // Middleware to validate request body for POST and PUT requests
 const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
-  const { email, name } = req.body;
-  if (!email || !name) {
-    return res.status(400).json({ success: false, message: 'Email and Name are required fields' });
+  const { description, itemName } = req.body;
+  if (!description || !itemName) {
+    return res.status(400).json({ success: false, message: 'Description and Name are required fields' });
   }
   next();
 };
@@ -74,7 +73,7 @@ const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: ()
 const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
 
-    const items = await TestItem.find();
+    const items = await RentalItem.find();
 
     return res.status(200).json({ items }); 
   } catch (error) {
@@ -86,11 +85,11 @@ const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) =>
 // Create item with image upload
 const createItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
-    const { email, name } = req.body;
-    console.log(email, name)
+    const { description, itemName, category } = req.body;
+    
     const image = req.file ? req.file.filename : '';
 
-    const newItem = await TestItem.create({ name, email, image });
+    const newItem = await RentalItem.create({ itemName, description, image, category });
 
     if (req.file) {
       const bucket = await getGridFSBucket();

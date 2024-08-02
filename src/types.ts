@@ -1,1 +1,1 @@
-export type ItemsToEditType = string[];
+export type RentalItemsToEditType = any[];

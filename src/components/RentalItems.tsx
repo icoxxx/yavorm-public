@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../utils/AuthContext";
-import { ItemsToEditType } from "../types";
+import { RentalItemsToEditType } from "../types";
 import { useItemsToEdit } from "../utils/EditContext";
-import { getItems, removeItem } from "../store/homeItems/dataSlice";
+import { getItems, removeItem } from "../store/rentalItems/dataSlice";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import FadeIn from "./FadeIn";
@@ -11,15 +11,16 @@ import { fromLeft } from "@/utils/animationVariants";
 type DataProps = {
     data: {
         date: string;
-        email: string;
-        name: string;
-        image: string;
+        description?: string;
+        itemName?: string;
+        image?: string;
+        category: string;
         __v: number;
         _id: string;
     }
   }
 
-const HomeItem: React.FC<DataProps> = ({data})=> {
+const RentalItems: React.FC<DataProps> = ({data})=> {
 
     const { isAuthenticated, logout, isAdmin } = useAuth();
     const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -28,16 +29,21 @@ const HomeItem: React.FC<DataProps> = ({data})=> {
     const dispatch = useDispatch();
 
 
-    const editItem = async (itemId : string, email: string, itemName: string, itemImage : string) => {
-        const newItemToEdit: ItemsToEditType = [itemId, email, itemName, itemImage];
-        setItemsToEdit(newItemToEdit);
-        localStorage.setItem('itemsToEdit', JSON.stringify(newItemToEdit));
+    const editItem = async (itemId? : string, description?: string, itemName?: string, itemImage? : string, category?: string) => {
+        const newItemToEdit: any = {
+          itemId: itemId,
+          description: description,
+          itemName: itemName,
+          itemImage: itemImage,
+          category: category,
+        };
+        setItemsToEdit(() => [newItemToEdit]);
       }
 
     const handleDelete = async ()=> {
         try {
           console.log(deleteId)
-          const response = await fetch(`http://localhost:3000/api/test/${deleteId}`, {
+          const response = await fetch(`http://localhost:3000/api/rental/${deleteId}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -58,10 +64,10 @@ const HomeItem: React.FC<DataProps> = ({data})=> {
         <>
              <li key={`${data._id}-li-item`}>
                     <FadeIn delay={0} direction={fromLeft}>
-                      <div>Name: {data.name}</div>
+                      <div>Name: {data.itemName}</div>
                     </FadeIn>
                     <FadeIn delay={0.5} direction={fromLeft}>
-                    <div>Email: {data.email}</div>
+                    <div>Email: {data.description}</div>
                     </FadeIn>
                     <div>
                     {data.image && (
@@ -71,7 +77,7 @@ const HomeItem: React.FC<DataProps> = ({data})=> {
                     {isAuthenticated && isAdmin && (
                     <div>
                         <Link href='/edit'>
-                        <button onClick={() => editItem(data._id, data.email, data.name, data.image)}>EDIT</button>
+                        <button onClick={() => editItem(data._id, data.description, data.itemName, data.image, data.category)}>EDIT</button>
                         </Link>
                         <button onClick={() => {
                         setDeleteConfirm(true);
@@ -99,4 +105,4 @@ const HomeItem: React.FC<DataProps> = ({data})=> {
 
 
 
-export default HomeItem;
+export default RentalItems;

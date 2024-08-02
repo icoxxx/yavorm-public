@@ -1,8 +1,16 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
+type ItemToEdit = {
+  itemId?: string;
+  description?: string;
+  itemName?: string;
+  itemImage?: string;
+  category?: string;
+}
+
 type ItemsToEditContextType = {
-  itemsToEdit: string[];
-  setItemsToEdit: React.Dispatch<React.SetStateAction<string[]>>;
+  itemsToEdit: ItemToEdit[];
+  setItemsToEdit: React.Dispatch<React.SetStateAction<ItemToEdit[]>>;
 };
 
 export const ItemsToEditContext = createContext<ItemsToEditContextType>({
@@ -17,7 +25,7 @@ type ItemsToEditProviderProps = {
 export const useItemsToEdit = () => useContext(ItemsToEditContext);
 
 export const ItemsToEditProvider: React.FC<ItemsToEditProviderProps> = ({ children }) => {
-  const [itemsToEdit, setItemsToEdit] = useState<string[]>([]);
+  const [itemsToEdit, setItemsToEdit] = useState<ItemToEdit[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

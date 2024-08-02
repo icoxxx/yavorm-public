@@ -2,23 +2,36 @@ import React, { useState, FormEvent, useRef} from "react";
 import { useUploadContext } from "../utils/UploadContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { addItem, getItems } from "../store/homeItems/dataSlice";
+import { addItem, getItems } from "../store/rentalItems/dataSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
+import cdj3000 from '../assets/images/CDJ-3000.png';
+import djEvent from '../assets/images/dj-event-pic.jpg';
+import blog from '../assets/images/blogpost.png';
+import Image from "next/image";
+import FadeIn from "./FadeIn";
+import { fromLeft } from "@/utils/animationVariants";
 
 const UploadForm: React.FC = ()=> {
-      const [name, setName] = useState("");
-      const [email, setEmail] = useState("");
+      const [itemName, setItemName] = useState("");
+      const [description, setDescription] = useState("");
+      const [category, setCategory] = useState('');
       const [file, setFile] = useState<File | null>(null); // Change to File | null to handle file uploads
       const [isUploading, setIsUploading] = useState(false);
       const {uploadMessage, setUploadMessage, cancelUpload } = useUploadContext();
       const fileInputRef = useRef<HTMLInputElement>(null);
       const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
+      const [activeCategory, setActiveCategory] = useState('');
+      const [blogTitle, setBlogTitle] = useState('');
+      const [blogText, setBlogText] = useState('');
+      const [galleryName, setGalleryName] = useState('');
 
-      type Item = {
+
+      type RentalItem = {
         date: string;
-        email: string;
-        name: string;
-        image: string;
+        description?: string;
+        itemName?: string;
+        image?: string;
+        category: string;
         __v: number;
         _id: string;
       };
@@ -32,16 +45,35 @@ const UploadForm: React.FC = ()=> {
         const controller = new AbortController();
     
         const formData = new FormData();
-        formData.append('email', email);
-        formData.append('name', name);
-        formData.append('image', file);
+        if(category === 'rental'){
+          formData.append('description', description);
+          formData.append('itemName', itemName);
+          formData.append('image', file);
+          formData.append('category', category);
+        }
+        else if(category === 'blogs'){
+          formData.append('blogTitle', blogTitle);
+          formData.append('blogText', blogText);
+          formData.append('image', file);
+          formData.append('category', category);
+        }
+        else if(category === 'gallery'){
+          formData.append('galleryName', galleryName);
+          formData.append('image', file);
+          formData.append('category', category);
+        }
+        else{
+          console.error('No cattegory selected');
+          return;
+        }
+        
         console.log(formData)
         setIsUploading(true)
     
         setUploadMessage('Wait for a moment. Data is Uploading.....');
     
         try {
-          const response = await fetch('http://localhost:3000/api/test', {
+          const response = await fetch(`http://localhost:3000/api/${category}`, {
             method: 'POST',
             body: formData,
             signal: controller.signal,
@@ -51,12 +83,12 @@ const UploadForm: React.FC = ()=> {
             throw new Error('Failed to upload data');
           }
 
-          const newItem: Item = await response.json();
-          //setItems(prevItems => [...prevItems, newItem]);
+          const newItem: RentalItem = await response.json();
+
           dispatch(addItem(newItem))
     
-          setName("");
-          setEmail("");
+          setItemName("");
+          setDescription("");
           setFile(null);
 
           if (fileInputRef.current) {
@@ -87,29 +119,45 @@ const UploadForm: React.FC = ()=> {
         }
       }
 
+      const categories = [
+        {
+        category: 'РЕНТАЛ',
+        image: cdj3000,
+      },
+      {
+        category: 'БЛОГОВЕ',
+        image: blog,
+      },
+      {
+        category: 'ГАЛЕРИЯ',
+        image: djEvent,
+      },
+    ]
 
-    return (
-    <>
-    <form id="test-form" onSubmit={handleForm}>
+    const RentalForm: React.FC = ()=> {
+      return(
+      <form id="upload-form" onSubmit={handleForm}>
+        <label htmlFor="itemName">Item Name</label>
         <input
           type="text"
-          id="name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          id="itemName"
+          name="itemName"
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
           autoComplete="on"
         />
-        <label htmlFor="name">Name</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="on"
-        />
-        <label htmlFor="email">Email</label>
 
+        <label htmlFor="description">Description</label>
+        <input
+          type="text"
+          id="description"
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          autoComplete="on"
+        />
+
+        <label htmlFor="file">Image</label>
         <input 
           type="file"
           id="file"
@@ -120,7 +168,125 @@ const UploadForm: React.FC = ()=> {
         />
 
         <input type="submit" id="submit" />
-    </form>
+      </form>
+      )
+    }
+
+    const BlogsForm: React.FC = ()=> {
+      return(
+      <form id="upload-form" onSubmit={handleForm}>
+        <label htmlFor="blogTitle">Blog Title</label>
+        <input
+          type="text"
+          id="blogTitle"
+          name="blogTitle"
+          value={blogTitle}
+          onChange={(e) => setBlogTitle(e.target.value)}
+          autoComplete="on"
+        />
+
+        <label htmlFor="blogText">Blog Text</label>
+        <input
+          type="text"
+          id="blogText"
+          name="blogText"
+          value={blogText}
+          onChange={(e) => setBlogText(e.target.value)}
+          autoComplete="on"
+        />
+
+        <label htmlFor="file">Image</label>
+        <input 
+          type="file"
+          id="file"
+          name="file"
+          accept="image/jpeg, image/png"
+          onChange={handleFileChange} // Call handleFileChange when file input changes
+          ref={fileInputRef}
+        />
+
+        <input type="submit" id="submit" />
+      </form>
+      )
+    }
+
+    const GalleryForm: React.FC = ()=> {
+      return(
+      <form id="upload-form" onSubmit={handleForm}>
+        <label htmlFor="galleryName">Gallery Name</label>
+        <input
+          type="text"
+          id="galleryName"
+          name="galleryName"
+          value={galleryName}
+          onChange={(e) => setGalleryName(e.target.value)}
+          autoComplete="on"
+        />
+
+        <label htmlFor="file">Image</label>
+        <input 
+          type="file"
+          id="file"
+          name="file"
+          accept="image/jpeg, image/png"
+          onChange={handleFileChange} // Call handleFileChange when file input changes
+          ref={fileInputRef}
+        />
+
+        <input type="submit" id="submit" />
+      </form>
+      )
+    }
+
+
+    return (
+    <>
+    <section className="selet-upload-category-wrapper">
+      <div>Моля, изберете категория</div>
+      {
+        categories.map((el, index)=> (
+          <div 
+          onClick={()=> {
+            setActiveCategory(el.category)
+            if(el.category === 'РЕНТАЛ'){
+              setCategory('rental');
+            }
+            else if(el.category === 'БЛОГОВЕ'){
+              setCategory('blogs');
+            }
+            else if(el.category === 'ГАЛЕРИЯ'){
+              setCategory('gallery');
+            }
+          }
+        } 
+          className={activeCategory === el.category ? `upload-category active-category` : 'upload-category'} 
+          key={`${el}-${index}`}
+          >
+            <div className="upload-category-text">
+              <span>{el.category}</span>
+            </div>
+            <Image src={el.image} quality={100} alt={el.category} />
+          </div>
+        ))
+      }
+    </section>
+
+    {category === 'rental' &&
+     <FadeIn direction={fromLeft}>
+      <RentalForm />
+     </FadeIn>
+     }
+    {category === 'blogs' && 
+    <FadeIn direction={fromLeft}>
+      <BlogsForm />
+    </FadeIn>
+    }
+    {category === 'gallery' && 
+    <FadeIn direction={fromLeft}>
+      <GalleryForm />
+    </FadeIn>
+    }
+
         <div>
               <p>{uploadMessage}</p>
               {isUploading && (

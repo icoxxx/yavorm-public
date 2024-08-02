@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useItemsToEdit } from "../utils/EditContext";
 import { useAuth } from "../utils/AuthContext";
 import { useDispatch } from "react-redux";
-import { getItems, updateItem } from "../store/homeItems/dataSlice";
+import { getItems, updateItem } from "../store/rentalItems/dataSlice";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
 import Image from "next/image";
@@ -11,15 +11,15 @@ import { useRouter } from "next/router";
 const EditPage: React.FunctionComponent = () => {
     const { itemsToEdit, setItemsToEdit } = useItemsToEdit();
     const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
-    const item_ID = itemsToEdit[0];
+    const item_ID = itemsToEdit[0].itemId;
     const router = useRouter();
 
     console.log(itemsToEdit)
 
     const {isAuthenticated, isAdmin} = useAuth();
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [itemName, setItemName] = useState("");
+    const [description, setDescription] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [redirectSeconds, setRedirectSeconds] = useState(3);
 
@@ -35,14 +35,14 @@ const EditPage: React.FunctionComponent = () => {
         e.preventDefault();
         try {
           const formData = new FormData();
-          email ? formData.append('email', email) : null;
-          name ? formData.append('name', name) : null;
+          description ? formData.append('description', description) : null;
+          itemName ? formData.append('itemName', itemName) : null;
           //formData.append("email", email);
           //formData.append("name", name);
           if (file) {
             formData.append("image", file);
           }
-          const response = await fetch(`http://localhost:3000/api/test/${item_ID}`, {
+          const response = await fetch(`http://localhost:3000/api/rental/${item_ID}`, {
             method: 'PUT',
             body: formData,
           });
@@ -89,21 +89,21 @@ const EditPage: React.FunctionComponent = () => {
                     <input
                     type="text"
                     id="editName"
-                    name="editNname"
-                    placeholder={itemsToEdit[2]}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    name="editName"
+                    placeholder={itemsToEdit[0].itemName}
+                    value={itemName}
+                    onChange={(e) => setItemName(e.target.value)}
                     />
-                    <label htmlFor="editName">Name</label>
+                    <label htmlFor="editName">Item Name</label>
                     <input
-                    type="email"
-                    id="editEmail"
-                    name="editEmail"
-                    placeholder={itemsToEdit[1]}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    id="editDescription"
+                    name="editDescription"
+                    placeholder={itemsToEdit[0].description}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     />
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="editDescription">Description</label>
         
                     <input 
                     type="file"
@@ -118,10 +118,10 @@ const EditPage: React.FunctionComponent = () => {
 
                 <ul>
                         <li>
-                            <Image width={100} height={50} quality={100} src={`/uploads/${itemsToEdit[3]}`} alt="edit-image"/>
+                            <Image width={100} height={50} quality={100} src={`/uploads/${itemsToEdit[0].itemImage}`} alt="edit-image"/>
                         </li>
-                        <li>{`Email - ${itemsToEdit[1]}`}</li>
-                        <li>{`Name - ${itemsToEdit[2]}`}</li>
+                        <li>{`Description - ${itemsToEdit[0].description}`}</li>
+                        <li>{`Item Name - ${itemsToEdit[0].itemName}`}</li>
                     </ul> 
                 </React.Fragment>
                 )

@@ -1,4 +1,4 @@
-import TestItem from '../../../Models/Test';
+import RentalItem from '../../../Models/RentalSchema';
 import multer from 'multer';
 import { RequestHandler } from 'express';
 import { MongoClient, Db, GridFSBucket } from 'mongodb';
@@ -63,19 +63,19 @@ const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiRes
 const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
     try {
       const itemId = req.query.id as string;
-      const { email, name } = req.body;
+      const { description, itemName, category } = req.body;
       let image: string | undefined;
   
       if (req.file) {
         image = req.file.filename;
       }
   
-      const oldItem = await TestItem.findById(itemId);
+      const oldItem = await RentalItem.findById(itemId);
       let oldImage: any;
       if(oldItem){
         oldImage = oldItem.image;
       } 
-      const updatedItem = await TestItem.findByIdAndUpdate(itemId, { email, name, image }, { new: true });
+      const updatedItem = await RentalItem.findByIdAndUpdate(itemId, { description, itemName, image, category }, { new: true });
       console.log(updateItem)
   
       if (!updatedItem) {
@@ -146,7 +146,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           return;
         }
   
-      const item = await TestItem.findByIdAndDelete(itemId);
+      const item = await RentalItem.findByIdAndDelete(itemId);
   
       if (!item) {
         res.status(404).json({ success: false, message: 'Item not found' });

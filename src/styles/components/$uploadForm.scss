@@ -1,0 +1,51 @@
+.selet-upload-category-wrapper{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    div:nth-child(1){
+        text-align: center;
+        flex: 1 0 100%;
+    }
+    .upload-category{
+        color: white;
+        position: relative;
+        width: 280px;
+        height: 200px;
+        background-color: #151030;
+        overflow: hidden;
+        border-radius: 20px;
+        cursor: pointer;
+
+        .upload-category-text{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            z-index: 2;
+            span{
+                width: 170px;
+                border-radius: 20px;
+                background-color: #f44336;
+            }
+        }
+        img{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            z-index: 1;
+        }
+    }
+}
+
+.active-category{
+    border: 2px solid #f44336;
+}

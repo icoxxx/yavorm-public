@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useAuth } from "../utils/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
-import { Item, getItems, setItems } from "../store/homeItems/dataSlice";
+import { RentalItem, getItems, setItems } from "../store/rentalItems/dataSlice";
 import { AppDispatch, RootState } from "../store/store";
 import UploadForm from "../components/UploadForm";
-import HomeItem from "../components/HomeItem";
+import RentalItems from "../components/RentalItems";
 import SpeakersCanvas from "@/components/SpeakersCanvas";
 import FadeIn from "@/components/FadeIn";
 import { fromBottom, fromRight } from "@/utils/animationVariants";
@@ -25,7 +25,7 @@ type HomeProps = {
   title: string;
   description: string;
   imageUrl: string;
-  fetchedItems: Item[];
+  fetchedItems: RentalItem[];
 };
 
 const HomePage: React.FunctionComponent<HomeProps> = ({title, description, imageUrl, fetchedItems})=> {
@@ -42,6 +42,7 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
 
   useEffect(() => {
     dispatch(setItems(fetchedItems));
+    console.log(fetchedItems)
   }, [dispatch, fetchedItems]);
     
       return (
@@ -127,9 +128,9 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
                   <ul>
                       {items.map((item)=> (
                         <article key={item._id}>
-                            <HomeItem
+                            <RentalItems
                               data = {item}>
-                              </HomeItem>
+                              </RentalItems>
                         </article>
                       ))}
 
@@ -144,7 +145,7 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/test');
+    const response = await fetch('http://localhost:3000/api/rental');
     if(!response.ok){
       throw new Error('Failed to fetch items');
     }

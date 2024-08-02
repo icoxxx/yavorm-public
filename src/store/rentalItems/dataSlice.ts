@@ -2,17 +2,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store'; // Adjust path as needed
 import { Draft } from 'immer'; // Import Draft from Immer
 
-export interface Item {
+export interface RentalItem {
     date: string;
-    email: string;
-    name: string;
-    image: string;
+    description?: string;
+    itemName?: string;
+    image?: string;
+    category: string;
     __v: number;
     _id: string;
 }
 
 interface DataState {
-    items: Item[];
+    items: RentalItem[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
@@ -24,11 +25,11 @@ const initialState: DataState = {
 };
 
 
-export const getItems = createAsyncThunk<Item[], void, { state: RootState }>(
+export const getItems = createAsyncThunk<RentalItem[], void, { state: RootState }>(
     'data/fetchData',
     async (_, thunkAPI) => {
         try {
-            const response = await fetch('http://localhost:3000/api/test', );
+            const response = await fetch('http://localhost:3000/api/rental', );
             if (!response.ok) {
                 throw new Error('Failed to fetch items');
             }
@@ -44,10 +45,10 @@ const dataSlice = createSlice({
     name: 'data',
     initialState,
     reducers: {
-        addItem: (state: Draft<DataState>, action: PayloadAction<Item>) => {
+        addItem: (state: Draft<DataState>, action: PayloadAction<RentalItem>) => {
             state.items = [...state.items, action.payload];
         },
-        updateItem: (state: Draft<DataState>, action: PayloadAction<Item>) => {
+        updateItem: (state: Draft<DataState>, action: PayloadAction<RentalItem>) => {
             const { _id } = action.payload;
             const existingItem = state.items.find(item => item._id === _id);
             if (existingItem) {
@@ -57,7 +58,7 @@ const dataSlice = createSlice({
         removeItem: (state: Draft<DataState>, action: PayloadAction<string>) => {
             state.items = state.items.filter(item => item._id !== action.payload); // Correct usage with Immer
         },
-        setItems: (state: Draft<DataState>, action: PayloadAction<Item[]>) => {
+        setItems: (state: Draft<DataState>, action: PayloadAction<RentalItem[]>) => {
             state.items = action.payload;
           },
     },
@@ -66,7 +67,7 @@ const dataSlice = createSlice({
             .addCase(getItems.pending, (state) => {
                 state.status = 'loading';
             })
-            .addCase(getItems.fulfilled, (state, action: PayloadAction<Item[]>) => {
+            .addCase(getItems.fulfilled, (state, action: PayloadAction<RentalItem[]>) => {
                 state.status = 'succeeded';
                 state.items = action.payload; // Correct usage with Immer
             })
