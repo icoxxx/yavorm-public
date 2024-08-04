@@ -91,14 +91,6 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
               </div>
             </section>
 
-            <section>
-              {isAuthenticated && isAdmin && (
-                <div>
-                  <UploadForm/>
-                </div>
-                )}
-            </section>
-
             <section className="home-carousel-wrapper">
               <h2>РЕНТАЛ</h2>
               <HomeCarousel/>

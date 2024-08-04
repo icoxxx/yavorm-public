@@ -4,8 +4,14 @@ type ItemToEdit = {
   itemId?: string;
   description?: string;
   itemName?: string;
+  modelName?: string;
+  rentalCategory?: string;
   itemImage?: string;
   category?: string;
+  blogTitle?: string;
+  blogAuthor?: string;
+  blogText?: string;
+  galleryName?: string;
 }
 
 type ItemsToEditContextType = {

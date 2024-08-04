@@ -7,12 +7,15 @@ import { useDispatch } from "react-redux";
 import Link from "next/link";
 import FadeIn from "./FadeIn";
 import { fromLeft } from "@/utils/animationVariants";
+import Image from "next/image";
 
 type DataProps = {
     data: {
         date: string;
         description?: string;
         itemName?: string;
+        modelName?: string;
+        rentalCategory?: string;
         image?: string;
         category: string;
         __v: number;
@@ -29,11 +32,13 @@ const RentalItems: React.FC<DataProps> = ({data})=> {
     const dispatch = useDispatch();
 
 
-    const editItem = async (itemId? : string, description?: string, itemName?: string, itemImage? : string, category?: string) => {
+    const editItem = async (itemId? : string, description?: string, itemName?: string, modelName?: string, rentalCategory?: string, itemImage? : string, category?: string) => {
         const newItemToEdit: any = {
           itemId: itemId,
           description: description,
           itemName: itemName,
+          modelName: modelName,
+          rentalCategory: rentalCategory,
           itemImage: itemImage,
           category: category,
         };
@@ -62,36 +67,42 @@ const RentalItems: React.FC<DataProps> = ({data})=> {
       }
     return(
         <>
-             <li key={`${data._id}-li-item`}>
+             <div>
                     <FadeIn delay={0} direction={fromLeft}>
-                      <div>Name: {data.itemName}</div>
+                      <div>Mарка: {data.itemName}</div>
                     </FadeIn>
                     <FadeIn delay={0.5} direction={fromLeft}>
-                    <div>Email: {data.description}</div>
+                    <div>Модел: {data.modelName}</div>
+                    </FadeIn>
+                    <FadeIn delay={0.5} direction={fromLeft}>
+                    <div>Категория: {data.rentalCategory}</div>
+                    </FadeIn>
+                    <FadeIn delay={0.5} direction={fromLeft}>
+                    <div>Описание: {data.description}</div>
                     </FadeIn>
                     <div>
                     {data.image && (
-                        <img src={`http://localhost:3000/uploads/${data.image}`} alt="Uploaded" />
+                        <Image alt={`${data.itemName} - image`} quality={100} width={300} height={300} src={`/uploads/rental/${data.image}` } />
                     )}
                     </div>
                     {isAuthenticated && isAdmin && (
-                    <div>
-                        <Link href='/edit'>
-                        <button onClick={() => editItem(data._id, data.description, data.itemName, data.image, data.category)}>EDIT</button>
+                    <div className="edit-delete-buttons">
+                        <Link href='/edit' className="edit-button">
+                        <button onClick={() => editItem(data._id, data.description, data.itemName, data.modelName, data.rentalCategory, data.image, data.category)}>EDIT</button>
                         </Link>
-                        <button onClick={() => {
+                        <button className="delete-button" onClick={() => {
                         setDeleteConfirm(true);
                         setDeleteId(data._id);
                         }}>DELETE</button>
                     </div>
                     )}
-             </li>
+             </div>
             {deleteConfirm && (
             <>
               <div className="blur-background" />
               <div className="delete-modal-wrapper">
                   <div>Are you sure you want to delete this item?</div>
-                  <div>
+                  <div className="delete-confirm-buttons">
                     <button onClick={()=> setDeleteConfirm(false)}>RETURN</button>
                     <button onClick={handleDelete}>Yes</button>
                   </div>

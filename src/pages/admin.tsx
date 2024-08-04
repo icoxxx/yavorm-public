@@ -30,29 +30,22 @@ const Admin: React.FC = ()=> {
       }, []);
 
     return(
-        <>
+        <div className="admin-wrapper">
           {
           (isAuthenticated && isAdmin) 
           ?
           (
             <>
             <UploadForm/>
-            {items.map((item)=> (
-                        <article key={item._id}>
-                            <RentalItems
-                              data = {item}>
-                              </RentalItems>
-                        </article>
-            ))}
             </>
           )
           :
-          <div>
-            <div>You need to login first!</div>
+          <div className="admin-redirection">
+            <h2>You need to login first!</h2>
             <div>{`Redirecting to Home Page in ${redirectSeconds}`}</div>
           </div>
           }
-        </>
+        </div>
     )
 };
 

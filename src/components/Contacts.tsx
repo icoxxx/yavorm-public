@@ -60,6 +60,21 @@ const Contacts:React.FC = ()=> {
       }
     return(
         <div className="contact-container">
+            <div className="contact-text-container">
+                <div className="contact-img-cover">
+                    <Image src={djEvent} quality={100} alt="dj-event" />
+                </div>
+                <div className="contact-text-wrapper">
+                    <div className="contact-text-title">
+                        <h2>YavorM</h2>
+                        <h2>Бранд, изграден от <span>професионалисти</span></h2>
+                    </div>
+                    <div className="contact-text-title">
+                        <p>Нашият екип работи неуморно, за да направи всяко събитие <span>неповторимо</span></p>
+                        <p>Имате запитване? Попълнете формата и ни изпратете съобщение.</p>
+                    </div>
+                </div>
+            </div>
             <div className="contact-form">
                 <p className="section-sub-text">Get in touch</p>
                 <h3 className="section-head-text">Contact.</h3>
@@ -83,21 +98,6 @@ const Contacts:React.FC = ()=> {
                         {loading ? 'Sending...' : 'Send'}
                     </button>
                 </form>
-            </div>
-            <div className="contact-text-container">
-                <div className="contact-img-cover">
-                    <Image src={djEvent} quality={100} alt="dj-event" />
-                </div>
-                <div className="contact-text-wrapper">
-                    <div className="contact-text-title">
-                        <h2>YavorM</h2>
-                        <h2>Бранд, изграден от <span>професионалисти</span></h2>
-                    </div>
-                    <div className="contact-text-title">
-                        <p>Нашият екип работи неуморно, за да направи всяко събитие <span>неповторимо</span></p>
-                        <p>Имате запитване? Попълнете формата и ни изпратете съобщение.</p>
-                    </div>
-                </div>
             </div>
         </div>
     )

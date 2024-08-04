@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,600,700");
 @import './components/$contacts.scss';
 @import './components/$uploadForm.scss';
+@import './components/$editForm.scss';
 
 *{
     box-sizing: border-box;
@@ -53,18 +54,38 @@ body{
 }
 
 .delete-modal-wrapper{
+    width: 300px;
+    height: 130px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 10;
+    z-index: 10000;
+    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     flex-wrap: nowrap;
+    background-color: #c82519;
+    color: white;
     gap: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.1);
+    .delete-confirm-buttons{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      button{
+        width: 80px;
+        height: 25px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+    }
 }
 
 .blur-background {
@@ -73,10 +94,13 @@ body{
     left: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(8px); /* Adjust the blur amount as needed */
+    backdrop-filter: blur(10px); /* Adjust the blur amount as needed */
     z-index: 5; /* Place the blur layer behind the modal but above other content */
   }
 
+  .edit-button button, .delete-button{
+    cursor: pointer;
+  }
 
   
   .modal {
@@ -551,7 +575,7 @@ body{
   --clip-top: calc(var(--stack-height) * var(--index));
   --clip-bottom: calc(var(--stack-height) * var(--inverse-index));
   clip-path: inset(var(--clip-top) 0 var(--clip-bottom) 0);
-  animation: stack 340ms cubic-bezier(.46,.29,0,1.24) 1 backwards calc(var(--index) * 120ms), glitch 2s ease infinite 2s alternate-reverse;
+  animation: stack 1000ms cubic-bezier(.46,.29,0,1.24) 1 backwards calc(var(--index) * 120ms), glitch 2s ease infinite 2s alternate-reverse;
 }
 
 .home-carousel-text.stack span:nth-child(odd) {
@@ -742,6 +766,22 @@ body{
   .contacts-wrapper{
     position: relative;
     width: 100%;
+  }
+  
+  .edit-delete-buttons{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+    button{
+      background-color: #151030;
+      color: white;
+      width: 60px;
+      height: 30px;
+      border-radius: 8px;
+    }
   }
 
   @media screen and (max-width: 500px) {

@@ -1,4 +1,4 @@
-import RentalItem from '../../../Models/RentalSchema';
+import BlogItem from '../../../Models/BlogSchema';
 import multer from 'multer';
 import { RequestHandler } from 'express';
 import { MongoClient, Db, GridFSBucket } from 'mongodb';
@@ -16,7 +16,7 @@ const corsOptions = {
   origin: 'http://localhost:3000',
   methods: ['GET', 'PUT', 'DELETE'],
 };
-const uploadPath = path.join(process.cwd(), 'public', 'uploads', 'rental');
+const uploadPath = path.join(process.cwd(), 'public', 'uploads', 'blogs');
 
 function staticMiddleware(root: string) {
   return (req: NextApiRequest, res: NextApiResponse, next: any) => {
@@ -59,7 +59,6 @@ const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiRes
   };
 };
 
-//get item by ID
 const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
     const {id} = req.query;
@@ -67,7 +66,7 @@ const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) 
     if(!id){
       return res.status(400).json({ success: false, message: 'Item ID is required' });
     }
-    const item = await RentalItem.findById(id);
+    const item = await BlogItem.findById(id);
     if (!item) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }
@@ -79,23 +78,24 @@ const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) 
   }
 };
 
+
 // Update item by ID
 const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
     try {
       const itemId = req.query.id as string;
-      const { description, itemName, modelName, rentalCategory, category} = req.body;
+      const { blogTitle, blogText, blogAuthor, category } = req.body;
       let image: string | undefined;
   
       if (req.file) {
         image = req.file.filename;
       }
   
-      const oldItem = await RentalItem.findById(itemId);
+      const oldItem = await BlogItem.findById(itemId);
       let oldImage: any;
       if(oldItem){
         oldImage = oldItem.image;
       } 
-      const updatedItem = await RentalItem.findByIdAndUpdate(itemId, { description, itemName, modelName, rentalCategory, image, category }, { new: true });
+      const updatedItem = await BlogItem.findByIdAndUpdate(itemId, { blogTitle, blogText, blogAuthor, image, category }, { new: true });
       console.log(updateItem)
   
       if (!updatedItem) {
@@ -119,7 +119,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
         }
   
         // delete the old img from fs
-        fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', oldImage), (err) => {
+        fs.unlink(path.join(process.cwd(), 'public', 'uploads', oldImage), (err) => {
           if (err) {
             console.error('Error deleting file from disk:', err);
             return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
@@ -166,7 +166,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           return;
         }
   
-      const item = await RentalItem.findByIdAndDelete(itemId);
+      const item = await BlogItem.findByIdAndDelete(itemId);
   
       if (!item) {
         res.status(404).json({ success: false, message: 'Item not found' });
@@ -181,7 +181,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           const fileId = files[0]._id;
           await bucket.delete(fileId);
           
-          fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', item.image), (err) => {
+          fs.unlink(path.join(process.cwd(), 'public', 'uploads', item.image), (err) => {
             if (err) {
               console.error('Error deleting file from disk:', err);
               return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
@@ -205,10 +205,10 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
     }
   };
 
-  const testIdRouter = createRouter<NextApiRequest, NextApiResponse>();
-  testIdRouter.use(cors(corsOptions));
-  testIdRouter.use('/uploads/rental', expressWrapper(staticMiddleware(uploadPath)));
-  testIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  const blogIdRouter = createRouter<NextApiRequest, NextApiResponse>();
+  blogIdRouter.use(cors(corsOptions));
+  blogIdRouter.use('/uploads', expressWrapper(staticMiddleware(uploadPath)));
+  blogIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
 
       uploadMiddleware(req as any, res as any, async (err: any) => {
           if (err) {
@@ -220,11 +220,10 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
          });
 
   }));
-  testIdRouter.delete(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  blogIdRouter.delete(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
     await deleteItem(req, res, db);
   }))
-
-  testIdRouter.get(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  blogIdRouter.get(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
     await getSingleItem(req, res, db);
   }))
 
@@ -235,7 +234,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
   }
 
 
-  export default testIdRouter.handler({
+  export default blogIdRouter.handler({
     onError: (err:any, req, res) => {
       console.error(err.stack);
       res.status(err.statusCode || 500).end(err.message);

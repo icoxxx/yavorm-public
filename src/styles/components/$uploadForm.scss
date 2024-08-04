@@ -49,3 +49,94 @@
 .active-category{
     border: 2px solid #f44336;
 }
+
+#upload-form-wrapper{
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    select{
+        width: 50%;
+        height: 30px;
+        border-radius: 8px;
+    }
+}
+
+.upload-form{
+    position: relative;
+    display: flex;
+    width: 850px;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #151030; 
+    padding: 32px;
+    border-radius: 16px; 
+    color: white;
+    label, input{
+        border-radius: 8px;
+        border: none;
+    }
+    input{
+        height: 30px;
+    }
+    input[type="text"]{
+        padding: 0 10px;
+    }
+    textarea{
+        padding: 10px;
+    }
+    input[type="submit"]{
+        cursor: pointer;
+        width: 160px;
+        height: 35px;
+    }
+}
+
+.uploaded-item-wrapper{
+    margin-top: 10px;
+    padding-top: 10px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-top: 1px solid black;
+}
+
+.admin-wrapper{
+    position: relative;
+    width: 100%;
+    padding: 0 100px;
+}
+
+.admin-redirection{
+    position: relative;
+    text-align: center;
+    width: 100%;
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media screen and (max-width: 950px) {
+    #upload-form-wrapper, .upload-form-container, .upload-form{
+        width: 100%;
+    }
+    #upload-form-wrapper{
+        select{
+            width: 100%;
+        }
+    }
+    .admin-wrapper{
+        padding: 0 30px;
+    }
+}

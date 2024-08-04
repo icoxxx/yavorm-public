@@ -9,6 +9,12 @@ const RentalItemSchema: Schema= new Schema({
     description: {
         type: String,
     },
+    modelName: {
+        type: String,
+    },
+    rentalCategory: {
+        type: String,
+    },
     image: {
         type: String,
     },

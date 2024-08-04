@@ -6,6 +6,8 @@ export interface RentalItem {
     date: string;
     description?: string;
     itemName?: string;
+    modelName?: string;
+    rentalCategory?: string;
     image?: string;
     category: string;
     __v: number;
