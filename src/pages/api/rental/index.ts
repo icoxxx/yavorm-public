@@ -73,7 +73,7 @@ const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: ()
 const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
 
-    const items = await RentalItem.find();
+    const items = await RentalItem.find().sort({ date: -1 });
 
     return res.status(200).json({ items }); 
   } catch (error) {

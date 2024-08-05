@@ -155,11 +155,14 @@ const EditPage: React.FunctionComponent = () => {
           if(itemsToEdit[0].category === 'rental'){
            description ? formData.append('description', description) : null;
            itemName ? formData.append('itemName', itemName) : null;
+           modelName ? formData.append('modelName', modelName) : null;
+           rentalCategory ? formData.append('rentalCategory', rentalCategory) : null;
            file ? file && formData.append('image', file) : null;
            formData.append('category', itemsToEdit[0].category);
           }
           else if(itemsToEdit[0].category === 'blogs'){
            blogTitle ? formData.append('blogTitle', blogTitle) : null;
+           blogAuthor ? formData.append('blogAuthor', blogAuthor) : null;
            blogText ? formData.append('blogText', blogText) : null;
            blogFile ? blogFile && formData.append('image', blogFile) : null;
            formData.append('category', itemsToEdit[0].category);
@@ -184,9 +187,12 @@ const EditPage: React.FunctionComponent = () => {
 
           setItemName("");
           setDescription("");
+          setModelName('');
+          setRentalCategory('');
           setFile(null);
 
           setBlogTitle('');
+          setBlogAuthor('');
           setBlogText('');
           setBlogFile(null);
 

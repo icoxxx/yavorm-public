@@ -99,7 +99,7 @@ const UploadForm: React.FC = ()=> {
       const [uploadedItem, setUploadedItem] = useState<any>(null);
       const [blogAuthor, setBlogAuthor] = useState('');
       const [modelName, setModelName] = useState('');
-      const [rentalCategory, setRentalCategory] = useState('');
+      const [rentalCategory, setRentalCategory] = useState('DJ миксери');
 
     useEffect(()=>{
       setUploadMessage('')
@@ -163,6 +163,8 @@ const UploadForm: React.FC = ()=> {
 
           const newItem = await response.json();
 
+          console.log(newItem.item)
+
           setUploadedItem(newItem.item);
 
           /////////////////////
@@ -172,7 +174,7 @@ const UploadForm: React.FC = ()=> {
           setItemName("");
           setDescription("");
           setModelName('');
-          setRentalCategory('');
+          setRentalCategory('DJ миксери');
           setFile(null);
 
           setBlogTitle('');
@@ -244,10 +246,10 @@ const UploadForm: React.FC = ()=> {
     ]
 
     useEffect(()=> {
-      if(modelName){
-        console.log(modelName)
+      if(rentalCategory){
+        console.log(rentalCategory)
       }
-    },[modelName])
+    },[rentalCategory])
 
 
     return (

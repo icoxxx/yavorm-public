@@ -2,6 +2,7 @@
 @import './components/$contacts.scss';
 @import './components/$uploadForm.scss';
 @import './components/$editForm.scss';
+@import './components/$rental.scss';
 
 *{
     box-sizing: border-box;
@@ -461,7 +462,7 @@ body{
 
 .items{
   position: relative;
-  display: none;
+
 }
 
 #page-wrap{

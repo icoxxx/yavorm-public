@@ -1,0 +1,225 @@
+.rental-page-wrapper{
+    position: relative;
+    width: 100%;
+}
+
+.rental-container{
+    position: relative;
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.rental-item-wrapper{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 350px;
+    height: 500px;
+    background-color: #e9e9e9;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 30px 40px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    color: black;
+    border-radius: 20px;
+    padding: 20px;
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
+    .logo-background{
+       position: absolute;
+       display: flex;
+       flex-wrap: nowrap;
+       flex-direction: column;
+       align-items: center;
+       width: 100%;
+       height: 100%;
+       opacity: 0.2;
+        img{
+            width: 85px;
+            height: 85px;
+        }
+        .rental-logo-wrapper{
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 10px;
+        }
+    }
+    .rental-item-img-wrapper{
+        position: relative;
+        width: 100%;
+        height: 45%;
+        overflow: hidden;
+        border-radius: 15px;
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+    .rental-item-text-wrapper{
+        position: relative;
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+    }
+}
+
+.rental-item-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #f44336;
+    border-radius: 20px;
+    clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+    transition: clip-path 0.5s ease-in-out;
+}
+
+.rental-item-wrapper:hover::before {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transition: clip-path 0.4s ease-in-out;
+}
+
+span.msg,
+span.choose {
+  color: #555;
+  padding: 5px 0 10px;
+  display: inherit;
+}
+
+.container {
+  margin: 50px auto 0;
+  text-align: center;
+}
+
+/* Styling Selectbox */
+.dropdown {
+  width: 300px;
+  display: inline-block;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgb(204, 204, 204);
+  transition: all 0.5s ease;
+  position: relative;
+  font-size: 14px;
+  color: #474747;
+  height: 100%;
+  text-align: left;
+
+  .select {
+    cursor: pointer;
+    display: block;
+    padding: 10px;
+  }
+
+  &:hover {
+    box-shadow: 0 0 4px rgb(204, 204, 204);
+  }
+
+  &.active,
+  &.active:hover {
+    box-shadow: 0 0 4px rgb(204, 204, 204);
+    border-radius: 2px 2px 0 0;
+    background-color: #f8f8f8;
+
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    background-color: #fff;
+    width: 100%;
+    left: 0;
+    margin-top: 1px;
+    box-shadow: 0 1px 2px rgb(204, 204, 204);
+    border-radius: 0 1px 2px 2px;
+    overflow: hidden;
+    max-height: 0; /* Start with max-height 0 */
+    transition: max-height 0.4s ease-in-out;
+    overflow-y: auto;
+    z-index: 9;
+    padding: 0;
+    list-style: none;
+
+    li {
+      padding: 10px;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f2f2f2;
+      }
+
+      &:active {
+        background-color: #e2e2e2;
+      }
+    }
+  }
+  &.active .dropdown-menu {
+    max-height: 200px; /* Set a max height for the transition */
+  }
+  &:not(.active) .dropdown-menu {
+    transition: max-height 0.4s ease-in-out;
+  }
+}
+
+.admin-buttons{
+    position: absolute;
+    padding: 10px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+    img{
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .rental-item-wrapper{
+        padding: 15px;
+        width: 230px;
+        height: 380px;
+        .logo-background{
+            img{
+                width: 55px;
+                height: 55px;
+            }
+        }
+    }
+    .rental-item-text-wrapper{
+        h2{
+            font-size: 17px;
+        }
+        h3{
+            font-size: 15px;
+        }
+        p{
+            font-size: 13px;
+        }
+        gap: 10px;
+    }
+
+    .dropdown{
+        width: 200px;
+    }
+}

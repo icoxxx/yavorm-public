@@ -68,7 +68,7 @@ const Header: React.FC = ()=> {
     const navLinks = [
         {text: 'HOME', color: "#f44336", link: '/'},
         {text: 'ABOUT', color: "#e91e63", link: '/about'},
-        {text: 'CONTACT', color: "#9c27b0", link: '/contact'},
+        {text: 'CONTACT', color: "#9c27b0", link: '/rental'},
         {text: 'LOGIN', color: '#673ab7', link: ''},
         {text: 'PRODUCTS', color: '#3f51b5', link: '/admin'},
       ];
