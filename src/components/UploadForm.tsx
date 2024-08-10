@@ -12,6 +12,7 @@ import FadeIn from "./FadeIn";
 import { fromLeft } from "@/utils/animationVariants";
 import { RentalItemType, BlogItemType, GalleryItemType } from "@/types/typesExport";
 import RentalItems from "./RentalItems";
+import { addBlogItem } from "@/store/blogItems/blogSlice";
 
 const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDescription, modelName, setModelName, rentalCategory, setRentalCategory, fileInputRef, handleFileChange, handleForm }) => {
   return (
@@ -28,6 +29,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
         <option value="DJ плеъри">DJ плеъри</option>
         <option value="Осветление">Осветление</option>
         <option value="Тонколони">Тонколони</option>
+        <option value="DJ контролери">DJ контролери</option>
         <option value="Субуфери">Субуфери</option>
         <option value="Микрофони">Микрофони</option>
         <option value="Други">Други</option>
@@ -44,7 +46,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
   );
 };
 
-const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogText, setBlogText, blogFileInputRef, handleFileChange, handleForm }) => {
+const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogText, setBlogText, instaLink, setInstaLink, fbLink, setFbLink, blogFileInputRef, handleFileChange, handleForm }) => {
   return (
     <form className="upload-form" id="upload-blog" onSubmit={handleForm}>
       <label htmlFor="blogTitle">Заглавие</label>
@@ -55,6 +57,12 @@ const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlog
 
       <label htmlFor="blogText">Текст/Съдържание</label>
       <textarea rows={15} id="blogText" name="blogText" value={blogText} onChange={(e) => setBlogText(e.target.value)} />
+
+      <label htmlFor="instaLink">Инстаграм пост</label>
+      <input type="text" id="instaLink" name="instaLink" value={instaLink} onChange={(e) => setInstaLink(e.target.value)} autoComplete="off" /> 
+
+      <label htmlFor="fbLink">Фейсбук пост</label>
+      <input type="text" id="fbLink" name="fbLink" value={fbLink} onChange={(e) => setFbLink(e.target.value)} autoComplete="off" /> 
 
       <label htmlFor="blogFile">Снимка/обложка</label>
       <input type="file" id="blogFile" name="blogFile" accept="image/jpeg, image/png" onChange={handleFileChange} ref={blogFileInputRef} />
@@ -100,6 +108,8 @@ const UploadForm: React.FC = ()=> {
       const [blogAuthor, setBlogAuthor] = useState('');
       const [modelName, setModelName] = useState('');
       const [rentalCategory, setRentalCategory] = useState('DJ миксери');
+      const [instaLink, setInstaLink] = useState('');
+      const [fbLink, setFbLink] = useState('');
 
     useEffect(()=>{
       setUploadMessage('')
@@ -132,6 +142,8 @@ const UploadForm: React.FC = ()=> {
           formData.append('blogTitle', blogTitle);
           formData.append('blogText', blogText);
           formData.append('blogAuthor', blogAuthor);
+          formData.append('instaLink', instaLink);
+          formData.append('fbLink', fbLink);
           blogFile && formData.append('image', blogFile);
           formData.append('category', category);
         }
@@ -168,7 +180,8 @@ const UploadForm: React.FC = ()=> {
           setUploadedItem(newItem.item);
 
           /////////////////////
-          dispatch(addItem(newItem.item));
+          category === 'rental' && (dispatch(addItem(newItem.item)));
+          category === 'blogs' && (dispatch(addBlogItem(newItem.item)));
           //////////
 
           setItemName("");
@@ -181,6 +194,8 @@ const UploadForm: React.FC = ()=> {
           setBlogText('');
           setBlogAuthor('');
           setBlogFile(null);
+          setInstaLink('');
+          setFbLink('');
 
           setGalleryName('');
           setGalleryFiles([]);
@@ -209,7 +224,7 @@ const UploadForm: React.FC = ()=> {
           }
         }
         finally{
-          dispatch(getItems())
+          //dispatch(getItems())
           setIsUploading(false);
         }
       };
@@ -312,6 +327,10 @@ const UploadForm: React.FC = ()=> {
               setBlogAuthor={setBlogAuthor}
               blogText={blogText}
               setBlogText={setBlogText}
+              instaLink={instaLink}
+              setInstaLink={setInstaLink}
+              fbLink={fbLink}
+              setFbLink={setFbLink}
               blogFileInputRef={blogFileInputRef}
               handleFileChange={handleFileChange}
               handleForm={handleForm}

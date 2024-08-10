@@ -15,6 +15,8 @@ export type RentalItemType = {
     blogTitle: string;
     blogText: string;
     blogAuthor: string;
+    instaLink: string;
+    fbLink: string;
     image: string;
     category: string;
     __v: number;

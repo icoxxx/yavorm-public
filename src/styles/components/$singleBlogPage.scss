@@ -1,0 +1,288 @@
+.single-blog-page-wrapper{
+    position: relative;
+    width: 100%;
+    padding: 50px;
+    .single-blog-wrapper{
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 50px;
+        .single-blog-container{
+            position: relative;
+            width: 60%;
+            padding: 50px;
+            border-radius: 30px;
+            background-color: #101357;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+            .single-blog-data{
+                position: relative;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                h1{
+                    font-family: 'Intro-Bold';
+                    text-align: center;
+                    margin-bottom: 30px;
+                    text-transform: uppercase;
+                }
+                .single-blog-img-wrapper{
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    overflow: hidden;
+                    border-radius: 10px;
+                    aspect-ratio: 16/9; /* Maintain aspect ratio */
+                
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover; /* Cover for better responsive behavior */
+                    }
+                }
+                .single-blog-author-date{
+                    display: flex;
+                    width: 100%;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    justify-content: space-between;
+                    margin-top: 15px;
+                    p{
+                        font-family: 'Intro-Bold';
+                    }
+                }
+                .single-blog-main-text{
+                    margin-top: 15px;
+                    p{
+                        font-family: 'Intro';
+                        margin-bottom: 16px;
+                        font-size: 18px;
+                        line-height: 1.2;
+                    }
+                }
+                .first-character {
+                    font-size: 60px;
+                    font-weight: bold; /* Optional: Make it bold or apply any other style */
+                    display: inline-block; /* Ensures the first character styling applies properly */
+                    line-height: 1; /* Adjust line height to match your design */
+                    font-family: 'Intro-Bold';
+                  }
+            }
+        }
+        .single-blog-aside{
+            position: sticky;
+            top: 0;
+            flex: 1;
+            height: 600px;
+            background-color: #3f51b5;
+            padding: 10px;
+            border-radius: 30px;
+            color: white;
+            text-align: center;
+            font-family: 'Intro';
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: space-around;
+            .aside-blog{
+                position: relative;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+                .aside-news{
+                    font-family: 'Intro-Bold';
+                    font-size: 18px;
+                }
+                a{
+                    text-decoration: none;
+                    color: white;
+                }
+                h4{
+                    font-family: 'Intro-Bold';
+                    cursor: pointer;
+                    &:hover{
+                        text-decoration: underline;
+                    }
+                }
+                a.button-to-blog{
+                    all: unset;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    width: 140px;
+                    height: 30px;
+                    border-radius: 12px;
+                    border-style: none;
+                    color: black;
+                    background-color: #e91e63;
+                    cursor: pointer;
+                }
+            }
+            .aside-blog-img-wrapper{
+                position: relative;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+                border-radius: 10px;
+                aspect-ratio: 16/9; /* Maintain aspect ratio */
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* Cover for better responsive behavior */
+                }
+            }
+        }
+    }
+}
+
+.insta-post{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.fb-post-container{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fb-post{
+        margin-top: 20px;
+        background-color: white;
+}
+
+.blog-share-buttons-container{
+    text-align: center;
+    font-family: 'Intro-Bold';
+    margin-top: 20px;
+    div:nth-last-of-type(1){
+        margin-top: 15px;
+    }
+    .share-buttons{
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+    }
+}
+
+@media screen and (min-width: 501px) and (max-width: 780px)  {
+    .single-blog-container{
+        padding: 20px !important;
+    }
+}
+
+@media screen and (max-width: 780px){
+    .single-blog-page-wrapper{
+        padding: 20px;
+    }
+    .single-blog-wrapper{
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 50px;
+        .single-blog-container{
+            position: relative;
+            width: 100%;
+            flex: 1;
+            border-radius: 30px;
+            background-color: #101357;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+    }
+    .single-blog-aside{
+        display: none !important;
+    }
+ }
+}
+
+@media screen and (max-width: 500px) {
+    .single-blog-container{
+        padding: 10px !important;
+    }
+    .single-blog-data{
+        h1{
+            margin-bottom: 10px !important;
+            font-size: 15px;
+        }
+    }
+    .single-blog-author-date{
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 1100px){
+    .fb-post{
+        width: 350px !important;
+        iframe{
+            width: 350px !important;
+        }
+    }
+    
+}
+
+@media screen and (max-width: 499px){
+    .fb-post{
+        width: 100% !important;
+        overflow: hidden !important;
+        iframe{
+            width: 100% !important;
+        }
+    }
+    .insta-post{
+        width: 100% !important;
+        overflow: hidden !important;
+        blockquote{
+            width: 100% !important;
+        }
+        iframe{
+            max-width: 100% !important;
+            min-width: auto !important;
+        }
+        .instagram-media{
+            width: 100% !important;
+        }
+    }
+
+    .single-blog-main-text{
+        .first-character{
+            font-size: 35px !important;
+        }
+        p{
+            font-size: 15px !important;
+            line-height: 1.9 !important;
+        }
+    }
+    
+}

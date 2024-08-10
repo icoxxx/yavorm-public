@@ -8,38 +8,42 @@ import rcfSub from '../assets/images/rcf-sub.png';
 import lights from '../assets/images/lights.png';
 import flx10 from '../assets/images/ddj-flx10.png';
 import shure from '../assets/images/shure-mic.png';
+import { useCategory } from "@/utils/RentalCategoryContext";
+import { useRouter } from "next/router";
 
 const HomeCarousel: React.FC = ()=> {
+    const {setCategoryToLoad} = useCategory();
+    const router = useRouter();
     const carouselProps = 
     [
         {
             image: djma9,
-            text: 'DJ МИКСЕРИ',
+            text: 'DJ миксери',
         },
         {
             image: cdj3000,
-            text: 'DJ ПЛЕЪРИ',
+            text: 'DJ плеъри',
         },
         {
             image: speakers,
-            text: 'АКТИВНИ КОЛОНИ',
+            text: 'Тонколони',
         },
         {
             image: rcfSub,
-            text: 'СУБУФЕРИ',
+            text: 'Субуфери',
         },
         {
             image: lights,
-            text: 'ОСВЕТЛЕНИЕ',
+            text: 'Осветление',
 
         },
         {
             image: flx10,
-            text: 'DJ КОНТРОЛЕРИ',
+            text: 'DJ контролери',
         },
         {
             image: shure,
-            text: 'МИКРОФОНИ',
+            text: 'Микрофони',
         },
     ]
     return(
@@ -99,7 +103,14 @@ const HomeCarousel: React.FC = ()=> {
                             <div key={`home-car-${index}`} className="home-carousel-items">
                                 <div className="home-carousel-img-container">
                                     <Image className="home-carousel-img" src={el.image} quality={100} alt={el.text} />
-                                    <div className="home-carousel-text stack" style={{ "--stacks": 3} as any}>
+                                    <div 
+                                    className="home-carousel-text stack" 
+                                    style={{ "--stacks": 3} as any}
+                                    onClick={()=> {
+                                        setCategoryToLoad(el.text);
+                                        router.push('/rental');
+                                    }}
+                                    >
                                         <span style={{"--index": 0} as any}>{el.text}</span>
                                         <span style={{"--index": 1} as any}>{el.text}</span>
                                         <span style={{"--index": 2} as any}>{el.text}</span>

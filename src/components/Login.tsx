@@ -130,7 +130,6 @@ const Login :React.FunctionComponent = ()=> {
 
     return(
         <>
-        <div className="container"></div>
         <div className={`modal ${isLoginOpened ? 'is-open' : ''}`}>
             <div className="modal-container">
                 <div className="modal-left">

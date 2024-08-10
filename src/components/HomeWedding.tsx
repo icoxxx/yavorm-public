@@ -23,13 +23,13 @@ const HomeWedding: React.FC = ()=> {
         <div className="home-wedding-wrapper">
             <div className="home-wedding-white">
                     <FadeIn direction={fromLeft}>
-                        <h2>ДИДЖЕИ ЗА ВАШЕТО СЪБИТИЕ</h2>        
+                        <h2>ДИДЖЕЙ ЗА ВАШЕТО СЪБИТИЕ</h2>        
                     </FadeIn>
                     <FadeIn direction={fromLeft}>
-                        <p>Hampshire Event DJs have provided the soundtrack to hundreds of weddings across the south of england.</p>
+                        <p>Диджей екипът на YavorM има зад гърба си стотици събития (клубни, частни, рожденни дни и сватби) из цялата страна, а и не само.</p>
                     </FadeIn>
                     <FadeIn direction={fromLeft}>
-                        <p>They are comfortable working with you on a playlist and whether you have a clear idea of what you want to hear or just a handful of songs you don’t our team can meet your expectations by delivering a wedding reception your guests will remember for all the right reasons.</p>                
+                        <p>Ние се чувстваме комфортно да работим заедно с клиента по подходящия плейлист за вашето събитие или пък да оставите музиката изцяло в наши ръце - за нас няма значение, ще се справим еднакво добре. Нашият екип ще покрие всички ваши изисквания и очаквания.</p>                
                     </FadeIn>
             </div>
             <div className="home-wedding-gray">
@@ -41,9 +41,10 @@ const HomeWedding: React.FC = ()=> {
                 </FadeIn>
                 <FadeIn direction={fromRight}>
                     <p>Everyone has since been saying how amazing the music was, the dance floor was packed the entire time. Would definitely recommend!</p>   
+                    <p>- Emily Atanasov</p>
                 </FadeIn>
                 <FadeIn direction={fromRight}>
-                    <button onClick={scrollToReservation} className="wedding-reserve">РЕЗЕРВИРАЙ</button>
+                    <button onClick={scrollToReservation} className="wedding-reserve">BOOK NOW</button>
                 </FadeIn>
             </div>
         </div>

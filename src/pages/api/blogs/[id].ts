@@ -83,7 +83,7 @@ const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) 
 const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
     try {
       const itemId = req.query.id as string;
-      const { blogTitle, blogText, blogAuthor, category } = req.body;
+      const { blogTitle, blogText, blogAuthor, instaLink, fbLink, category } = req.body;
       let image: string | undefined;
   
       if (req.file) {
@@ -95,7 +95,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
       if(oldItem){
         oldImage = oldItem.image;
       } 
-      const updatedItem = await BlogItem.findByIdAndUpdate(itemId, { blogTitle, blogText, blogAuthor, image, category }, { new: true });
+      const updatedItem = await BlogItem.findByIdAndUpdate(itemId, { blogTitle, blogText, blogAuthor, instaLink, fbLink, image, category }, { new: true });
       console.log(updateItem)
   
       if (!updatedItem) {
@@ -119,7 +119,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
         }
   
         // delete the old img from fs
-        fs.unlink(path.join(process.cwd(), 'public', 'uploads', oldImage), (err) => {
+        fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'blogs', oldImage), (err) => {
           if (err) {
             console.error('Error deleting file from disk:', err);
             return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
@@ -181,7 +181,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           const fileId = files[0]._id;
           await bucket.delete(fileId);
           
-          fs.unlink(path.join(process.cwd(), 'public', 'uploads', item.image), (err) => {
+          fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'blogs', item.image), (err) => {
             if (err) {
               console.error('Error deleting file from disk:', err);
               return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
@@ -207,7 +207,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
 
   const blogIdRouter = createRouter<NextApiRequest, NextApiResponse>();
   blogIdRouter.use(cors(corsOptions));
-  blogIdRouter.use('/uploads', expressWrapper(staticMiddleware(uploadPath)));
+  blogIdRouter.use('/uploads/blogs', expressWrapper(staticMiddleware(uploadPath)));
   blogIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
 
       uploadMiddleware(req as any, res as any, async (err: any) => {

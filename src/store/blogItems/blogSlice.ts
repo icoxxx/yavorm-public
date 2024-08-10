@@ -3,10 +3,15 @@ import { RootState } from '../store'; // Adjust path as needed
 import { Draft } from 'immer'; // Import Draft from Immer
 
 export interface BlogItem {
-    title: string;
-    content: string;
-    author: string;
     date: string;
+    blogTitle?: string;
+    blogText?: string;
+    blogAuthor?: string;
+    instaLink?: string;
+    fbLink?: string;
+    image?: string;
+    category: string;
+    __v: number;
     _id: string;
 }
 
@@ -23,10 +28,10 @@ const initialState: BlogState = {
 };
 
 export const getBlogItems = createAsyncThunk<BlogItem[], void, { state: RootState }>(
-    'blog/fetchBlogItems',
+    'blogs/fetchBlogItems',
     async (_, thunkAPI) => {
         try {
-            const response = await fetch('http://localhost:3000/api/blog');
+            const response = await fetch('http://localhost:3000/api/blogs');
             if (!response.ok) {
                 throw new Error('Failed to fetch blog items');
             }
@@ -39,7 +44,7 @@ export const getBlogItems = createAsyncThunk<BlogItem[], void, { state: RootStat
 );
 
 const blogSlice = createSlice({
-    name: 'blog',
+    name: 'blogs',
     initialState,
     reducers: {
         addBlogItem: (state: Draft<BlogState>, action: PayloadAction<BlogItem>) => {

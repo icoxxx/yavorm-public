@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import dataReducer from './rentalItems/dataSlice'
+import blogsReducer from './blogItems/blogSlice';
 
 export const store = configureStore({
     reducer: {
       data: dataReducer,
+      blogs: blogsReducer,
     }
 });
 

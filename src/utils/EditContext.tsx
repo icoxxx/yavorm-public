@@ -11,7 +11,10 @@ type ItemToEdit = {
   blogTitle?: string;
   blogAuthor?: string;
   blogText?: string;
+  instaLink?: string;
+  fbLink?: string;
   galleryName?: string;
+  redirectPath: string;
 }
 
 type ItemsToEditContextType = {

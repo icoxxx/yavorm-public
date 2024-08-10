@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import React, { useEffect, useRef, useState } from "react";
-import { RentalItem, setItems } from "@/store/rentalItems/dataSlice";
+import { removeItem, RentalItem, setItems } from "@/store/rentalItems/dataSlice";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -11,6 +11,10 @@ import { fromLeft80 } from "@/utils/animationVariants";
 import Head from "next/head";
 import editButton from '../assets/images/edit-button.png';
 import deleteButton from '../assets/images/delete-button.png';
+import { useItemsToEdit } from "@/utils/EditContext";
+import Link from "next/link";
+import { useCategory } from "@/utils/RentalCategoryContext";
+import DeleteModal from "@/components/DeleteModal";
 
 type RentalProps = {
     title: string;
@@ -30,9 +34,58 @@ const Rental: React.FC<RentalProps> = ({title, description, imageUrl, rentalItem
   const items = useSelector((state: RootState) => state.data.items);
   const { isAuthenticated, logout, isAdmin } = useAuth();
   const [isActive, setIsActive] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>('Всички продукти');
+  const {categoryToLoad, setCategoryToLoad} = useCategory();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryToLoad ? categoryToLoad : 'Всички продукти');
   const dropdownMenuRef = useRef<HTMLUListElement>(null);
-  const [filteredItems, setFilteredItems] = useState<RentalItem[]>(rentalItems);
+  const [filteredItems, setFilteredItems] = useState<RentalItem[]>(categoryToLoad ? items.filter(item => item.rentalCategory === categoryToLoad) : items);
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
+  const { itemsToEdit, setItemsToEdit } = useItemsToEdit();
+
+  useEffect(()=> {
+    return ()=> {
+      setCategoryToLoad('');
+    }
+  },[])
+
+
+  const editItem = async (itemId? : string, description?: string, itemName?: string, modelName?: string, rentalCategory?: string, itemImage? : string, category?: string, redirectPath?: string) => {
+    const newItemToEdit: any = {
+      itemId: itemId,
+      description: description,
+      itemName: itemName,
+      modelName: modelName,
+      rentalCategory: rentalCategory,
+      itemImage: itemImage,
+      category: category,
+      redirectPath: redirectPath,
+    };
+    setItemsToEdit(() => [newItemToEdit]);
+  }
+
+  const handleDelete = async ()=> {
+   try {
+      console.log(deleteId)
+      const response = await fetch(`http://localhost:3000/api/rental/${deleteId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      if (response.ok) {
+       dispatch(removeItem(deleteId));
+       setFilteredItems(filteredItems.filter(item => item._id !== deleteId));
+       setDeleteConfirm(false); // Close the confirmation modal
+      }
+      else if(!response.ok){
+        throw new Error('Failed to delete item');
+      }
+    } catch (error:any) {
+      console.log(`Error: ${error}`)
+    } 
+  }
+
 
   useEffect(()=>{
     if(selectedCategory !== 'Всички продукти'){
@@ -90,6 +143,7 @@ const Rental: React.FC<RentalProps> = ({title, description, imageUrl, rentalItem
                   <li onClick={() => selectCategory('Осветление')}>Осветление</li>
                   <li onClick={() => selectCategory('Тонколони')}>Тонколони</li>
                   <li onClick={() => selectCategory('Субуфери')}>Субуфери</li>
+                  <li onClick={() => selectCategory('DJ контролери')}>DJ Контролери</li>
                   <li onClick={() => selectCategory('Микрофони')}>Микрофони</li>
                   <li onClick={() => selectCategory('Други')}>Други</li>
                 </ul>
@@ -102,8 +156,22 @@ const Rental: React.FC<RentalProps> = ({title, description, imageUrl, rentalItem
                 <div key={`rental-${index}`} className="rental-item-wrapper">
                   {isAuthenticated && isAdmin && (
                     <div className="admin-buttons">
-                      <Image src={editButton} quality={100} alt="edit-button" />
-                      <Image src={deleteButton} quality={100} alt="delete-button"/>
+                      <Link href='/edit'>
+                        <Image src={editButton}
+                         quality={100} 
+                         alt="edit-button"
+                         onClick={() => editItem(item._id, item.description, item.itemName, item.modelName, item.rentalCategory, item.image, item.category, '/rental')}
+                         />
+                      </Link>
+                      <Image 
+                      src={deleteButton} 
+                      quality={100} 
+                      alt="delete-button"
+                      onClick={() => {
+                        setDeleteConfirm(true);
+                        setDeleteId(item._id);
+                        }}
+                      />
                     </div>
                   )}
                   <div className="logo-background">
@@ -144,6 +212,9 @@ const Rental: React.FC<RentalProps> = ({title, description, imageUrl, rentalItem
             }
         </FadeIn>
       </div>
+      {deleteConfirm && (
+           <DeleteModal setDeleteConfirm={setDeleteConfirm} handleDelete={handleDelete} />
+          )}    
     </>
     )
 };

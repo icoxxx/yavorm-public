@@ -72,10 +72,14 @@ const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: ()
 // Get all items
 const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
+    const { page = 1, limit = 5 } = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
 
-    const items = await BlogItem.find();
+    const items = await BlogItem.find().sort({ date: -1 }).skip(skip).limit(Number(limit));
+    const totalItems = await BlogItem.countDocuments();
+    const totalPages = Math.ceil(totalItems / Number(limit));
 
-    return res.status(200).json({ items }); 
+    return res.status(200).json({ items, currentPage: Number(page), totalPages, totalItems, }); 
   } catch (error) {
     console.error('Error fetching items:', error);
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -85,12 +89,12 @@ const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) =>
 // Create item with image upload
 const createItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
   try {
-    const { blogTitle, blogText, blogAuthor, category } = req.body;
+    const { blogTitle, blogText, blogAuthor, instaLink, fbLink, category } = req.body;
     
     const image = req.file ? req.file.filename : '';
 
-    const newItem = await BlogItem.create({ blogTitle, blogText, blogAuthor, image, category });
-
+    const newItem = await BlogItem.create({ blogTitle, blogText, blogAuthor, instaLink, fbLink, image, category });
+    
     if (req.file) {
       const bucket = await getGridFSBucket();
       const uploadStream = bucket.openUploadStream(image);

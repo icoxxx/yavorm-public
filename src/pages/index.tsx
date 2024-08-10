@@ -20,6 +20,8 @@ import Services from "@/components/Services";
 import HomeWedding from "@/components/HomeWedding";
 import Blogs from "@/components/Blogs";
 import Contacts from "@/components/Contacts";
+import FacebookEmbedComponent from "@/components/FacebookEmbed";
+import InstagramEmbed from "@/components/InstagramEmbed";
 
 type HomeProps = {
   title: string;
@@ -95,7 +97,7 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
               <h2>РЕНТАЛ</h2>
               <HomeCarousel/>
               <div id="view-all-products">
-                <Link href={'/'}>ВИЖ ВСИЧКИ</Link>
+                <Link href={'/rental'}>ВИЖ ВСИЧКИ</Link>
               </div>
             </section>
 
@@ -129,7 +131,13 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
                   </ul>
                 </section>
                 )}
-
+                <FacebookEmbedComponent
+                url='https://www.facebook.com/andrewismusic/posts/451971596293956'
+                width={350}
+                 />
+                 <div style={{ display: 'flex', justifyContent: 'center'}}>
+                  <InstagramEmbed url="https://www.instagram.com/p/C87oiVmN1xS/" />
+                 </div>
           </main>
         </>
       );

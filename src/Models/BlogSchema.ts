@@ -11,6 +11,12 @@ const BlogItemSchema: Schema = new Schema({
     blogAuthor: {
         type: String,
     },
+    instaLink: {
+        type: String,
+    },
+    fbLink:{
+        type: String,
+    },
     image: {
         type: String,
     },

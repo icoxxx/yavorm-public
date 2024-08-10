@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import FadeIn from "@/components/FadeIn";
 import { fromLeft } from "@/utils/animationVariants";
+import { updateBlogItem } from "@/store/blogItems/blogSlice";
 
 const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDescription, modelName, setModelName, rentalCategory, setRentalCategory, fileInputRef, handleFileChange, handleForm, placeholder }) => {
   return (
@@ -42,7 +43,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
   );
 };
 
-const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogText, setBlogText, blogFileInputRef, handleFileChange, handleForm, placeholder }) => {
+const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogText, setBlogText, instaLink, setInstaLink, fbLink, setFbLink, blogFileInputRef, handleFileChange, handleForm, placeholder }) => {
   return (
     <form className="upload-form" id="upload-blog" onSubmit={handleForm}>
       <label htmlFor="blogTitle">Заглавие</label>
@@ -53,6 +54,12 @@ const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlog
 
       <label htmlFor="blogText">Текст/Съдържание</label>
       <textarea rows={15} id="blogText" name="blogText" value={blogText} placeholder={placeholder.blogText} onChange={(e) => setBlogText(e.target.value)} />
+
+      <label htmlFor="instaLink">Инстаграм пост</label>
+      <input type="text" id="instaLink" name="instaLink" value={instaLink} onChange={(e) => setInstaLink(e.target.value)} autoComplete="off" /> 
+
+      <label htmlFor="fbLink">Фейсбук пост</label>
+      <input type="text" id="fbLink" name="fbLink" value={fbLink} onChange={(e) => setFbLink(e.target.value)} autoComplete="off" /> 
 
       <label htmlFor="blogFile">Снимка/обложка</label>
       <input type="file" id="blogFile" name="blogFile" accept="image/jpeg, image/png" onChange={handleFileChange} ref={blogFileInputRef} />
@@ -102,6 +109,9 @@ const EditPage: React.FunctionComponent = () => {
     const [blogAuthor, setBlogAuthor] = useState('');
     const [modelName, setModelName] = useState('');
     const [rentalCategory, setRentalCategory] = useState(itemsToEdit[0].rentalCategory);
+    const [instaLink, setInstaLink] = useState('');
+    const [fbLink, setFbLink] = useState('');
+
 
     const placeholder: {
       description?: string;
@@ -111,7 +121,9 @@ const EditPage: React.FunctionComponent = () => {
       blogTitle?: string;
       blogAuthor?: string;
       blogText?: string;
-      galleryName?: string
+      galleryName?: string;
+      instaLink?: string;
+      fbLink?: string;
     } = {};
 
     if(itemsToEdit){
@@ -125,6 +137,8 @@ const EditPage: React.FunctionComponent = () => {
         placeholder.blogTitle = itemsToEdit[0].blogTitle;
         placeholder.blogAuthor = itemsToEdit[0].blogAuthor;
         placeholder.blogText = itemsToEdit[0].blogText;
+        placeholder.instaLink = itemsToEdit[0].instaLink;
+        placeholder.fbLink = itemsToEdit[0].fbLink;
       }
       else if(itemsToEdit[0].category === 'gallery'){
         placeholder.galleryName = itemsToEdit[0].galleryName;
@@ -164,6 +178,8 @@ const EditPage: React.FunctionComponent = () => {
            blogTitle ? formData.append('blogTitle', blogTitle) : null;
            blogAuthor ? formData.append('blogAuthor', blogAuthor) : null;
            blogText ? formData.append('blogText', blogText) : null;
+           instaLink ? formData.append('instaLink', instaLink) : null;
+           fbLink ? formData.append('fbLink', fbLink) : null;
            blogFile ? blogFile && formData.append('image', blogFile) : null;
            formData.append('category', itemsToEdit[0].category);
           }
@@ -182,7 +198,8 @@ const EditPage: React.FunctionComponent = () => {
           const updatedItem = await response.json();
 
           ////////////
-          dispatch(updateItem(updatedItem));
+          itemsToEdit[0].category === 'rental' && (dispatch(updateItem(updatedItem)));
+          itemsToEdit[0].category === 'blogs' && (dispatch(updateBlogItem(updatedItem)));
           ////////////
 
           setItemName("");
@@ -194,6 +211,8 @@ const EditPage: React.FunctionComponent = () => {
           setBlogTitle('');
           setBlogAuthor('');
           setBlogText('');
+          setFbLink('');
+          setInstaLink('');
           setBlogFile(null);
 
           setGalleryName('');
@@ -217,10 +236,8 @@ const EditPage: React.FunctionComponent = () => {
           console.error(`Error: ${err.message}`)
         }
         finally{
-          //////////////
-          dispatch(getItems());
-          ///////////////
-          router.push('/'); // Navigate back to the homepage
+          //dispatch(getItems());
+          router.push(itemsToEdit[0].redirectPath); // Navigate back to corresponded page
         }
     
       }
@@ -273,6 +290,10 @@ const EditPage: React.FunctionComponent = () => {
                   setBlogAuthor={setBlogAuthor}
                   blogText={blogText}
                   setBlogText={setBlogText}
+                  instaLink={instaLink}
+                  setInstaLink={setInstaLink}
+                  fbLink={fbLink}
+                  setFbLink={setFbLink}
                   blogFileInputRef={blogFileInputRef}
                   handleFileChange={handleFileChange}
                   handleForm={handleEditForm}
@@ -292,14 +313,6 @@ const EditPage: React.FunctionComponent = () => {
                 />
               </FadeIn>
               }
-
-                  <ul>
-                      <li>
-                      <Image width={100} height={50} quality={100} src={`/uploads/${itemsToEdit[0].category}/${itemsToEdit[0].itemImage}`} alt="edit-image"/>
-                      </li>
-                      <li>{`Item Name - ${itemsToEdit[0].itemName}`}</li>
-                      <li>{`Description - ${itemsToEdit[0].description}`}</li>
-                  </ul> 
             </React.Fragment>
                     )
                     :

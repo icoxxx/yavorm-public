@@ -6,6 +6,8 @@ import StarsCanvas from './Stars';
 import { useIsLoginOpened } from '@/utils/LoginModalContext';
 import { useAuth } from '@/utils/AuthContext';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
+import logo from '../assets/images/Yavor-M-logo-color.svg';
 
 const Header: React.FC = ()=> {
     const [isMenuOpen, setIsMenuOPen] = useState<boolean | undefined>(undefined);
@@ -20,6 +22,15 @@ const Header: React.FC = ()=> {
         setIsClient(true);
         setWindowWidth(window.innerWidth)
       }, [])
+
+      const scrollToContacts = ()=> {
+        if(isClient){
+          const sendMail = document.querySelector('.contacts-wrapper');
+          if (sendMail){
+              sendMail.scrollIntoView({behavior: 'smooth'});
+          }
+        }
+    }
 
       const handleScroll = ()=> {
         if(isClient){
@@ -67,17 +78,17 @@ const Header: React.FC = ()=> {
     
     const navLinks = [
         {text: 'HOME', color: "#f44336", link: '/'},
-        {text: 'ABOUT', color: "#e91e63", link: '/about'},
-        {text: 'CONTACT', color: "#9c27b0", link: '/rental'},
-        {text: 'LOGIN', color: '#673ab7', link: ''},
-        {text: 'PRODUCTS', color: '#3f51b5', link: '/admin'},
+        {text: 'CONTACT', color: "#9c27b0", link: ''},
+        {text: 'RENTAL', color: "#e91e63", link: '/rental'},
+        {text: 'BLOGS', color: '#673ab7', link: '/blogs/page/1'},
+        {text: 'LOGIN', color: '#3f51b5', link: ''},
+        {text: 'ADMIN', color: '#05a89b', link: '/admin'},
       ];
 
     const $root:any = useRef();
     const $indicator1:any = useRef();
     const $items:any = useRef(navLinks.map(createRef));
     const [active, setActive] = useState(0);
-
 
     const animate = () => {
         const menuOffset = $root.current?.getBoundingClientRect() || { left: 0, top: 0 };
@@ -109,7 +120,7 @@ const Header: React.FC = ()=> {
         return () => {
           window.removeEventListener('resize', animate);
         };
-      }, [active]);
+      }, [active, $root.current, isAuthenticated]);
 
       const [openLoginFromMenu, setOpenLoginFromMenu] = useState(false);
 
@@ -132,61 +143,102 @@ const Header: React.FC = ()=> {
         <nav onAnimationEnd={openLoginFromHidden} className={`hidden-menu ${isMenuOpen === undefined ? "" : (isMenuOpen ? "hidden-active" : "hidden-inactive")}`}>
           <StarsCanvas/>
           {navLinks.map((navLink, index)=>
-          <Link  onClick={(e)=> {
-            handleMenuToggle()
-            if((e.target as HTMLElement).textContent === 'LOGIN'){
-              setOpenLoginFromMenu(true);
-            }
-            if((e.target as HTMLElement).textContent === 'LOGOUT'){
-              logout()
-              router.push('/')
-            }
-          }} key={`${index}-${navLink.text}`} href={navLink.link}>{
-            navLink.text !== 'LOGIN'
+            navLink.text !== 'CONTACT' 
             ?
-            navLink.text
+            <Link  onClick={(e)=> {
+              handleMenuToggle()
+              if((e.target as HTMLElement).textContent === 'LOGIN'){
+                setOpenLoginFromMenu(true);
+              }
+              if((e.target as HTMLElement).textContent === 'LOGOUT'){
+                logout()
+                router.push('/')
+              }
+            }} 
+            key={`${index}-${navLink.text}`} 
+            href={navLink.link}
+            >
+              {
+              navLink.text !== 'LOGIN'
+              ?
+              navLink.text
+              :
+              (isAuthenticated ? 'LOGOUT' : 'LOGIN')
+            }
+            </Link>
             :
-            (isAuthenticated ? 'LOGOUT' : 'LOGIN')
-          }</Link> 
+            <div
+            className='contacts-hidden' 
+            onClick={()=> {handleMenuToggle(), router.push('/'), setTimeout(() => {
+              scrollToContacts();
+            }, 600);}}
+            key={`${index}-${navLink.text}`} 
+            >
+              {navLink.text}
+            </div> 
           )}
         </nav>
         <nav className="nav-container" ref={$root}>
             <div className={isMenuOpen ? 'hamb-button hamb-active' : 'hamb-button'}>
               <Hamburger toggled={isMenuOpen} toggle={handleMenuToggle} />
             </div>
-            {navLinks.map((navLink, index)=>
-            navLink.text !== 'LOGIN'
-            ?
-            <Link 
-            className={`item ${active === index ? 'active' : ''}`}
-            onMouseEnter={() => setActive(index)}
-            ref={$items.current[index]}
-            key={`${index}-${navLink.text}`} 
-            href={navLink.link}>
-                {navLink.text}
-            </Link>
-            :
-            <div
-                className={`item ${active === index ? 'active' : ''}`}
-                onMouseEnter={() => setActive(index)}
-                ref={$items.current[index]}
-                key={`${index}-${navLink.text}`}
-                onClick={
-                    isAuthenticated 
-                    ? 
-                    logout
-                    :
-                    openModal
-                }             
-            >
-                {isAuthenticated
-                ?
-                'LOGOUT'
-                :
-                'LOGIN'
-                }
+            <div className='logo-mobile-nav'>
+              <Link href={'/'}>
+              <Image src={logo} width={90} height={90} quality={100} alt='logo' />
+              </Link>
             </div>
-            )}
+            {navLinks.map((navLink, index) => {
+              if (navLink.text !== 'LOGIN' && navLink.text !== 'ADMIN' && navLink.text !== 'CONTACT') {
+                return (
+                  <Link
+                    className={`item ${active === index ? 'active' : ''}`}
+                    onMouseEnter={() => setActive(index)}
+                    ref={$items.current[index]}
+                    key={`${index}-${navLink.text}`}
+                    href={navLink.link}
+                  >
+                    {navLink.text}
+                  </Link>
+                );
+              } else if (navLink.text === 'LOGIN') {
+                return (
+                  <div
+                    className={`item ${active === index ? 'active' : ''}`}
+                    onMouseEnter={() => setActive(index)}
+                    ref={$items.current[index]}
+                    key={`${index}-${navLink.text}`}
+                    onClick={isAuthenticated ? logout : openModal}
+                  >
+                    {isAuthenticated ? 'LOGOUT' : 'LOGIN'}
+                  </div>
+                );
+              } else if (navLink.text === 'ADMIN' && isAuthenticated && isAdmin) {
+                return (
+                  <Link
+                    className={`item ${active === index ? 'active' : ''}`}
+                    onMouseEnter={() => setActive(index)}
+                    ref={$items.current[index]}
+                    key={`${index}-${navLink.text}`}
+                    href={navLink.link}
+                  >
+                    {navLink.text}
+                  </Link>
+                );
+              }
+              else if (navLink.text === 'CONTACT') {
+                return (
+                  <div
+                  className={`item ${active === index ? 'active' : ''}`}
+                  onMouseEnter={() => setActive(index)}
+                  ref={$items.current[index]}
+                  key={`${index}-${navLink.text}`}
+                  onClick={scrollToContacts}
+                >
+                  {navLink.text}
+                </div>
+                )
+              }
+            })}
             <div ref={$indicator1} className="indicator" />
         </nav>
          <div>

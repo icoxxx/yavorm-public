@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import Header from "@/components/Header";
 import { IsLoginOpenedProvider } from "@/utils/LoginModalContext";
+import { CategoryProvider } from "@/utils/RentalCategoryContext";
+
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -18,12 +20,14 @@ export default function App({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <IsLoginOpenedProvider>
           <AuthProvider>
-            <ItemsToEditProvider>
-                <UploadProvider>
-                      <Header/>
-                      <Component {...pageProps} />
-                </UploadProvider>
-              </ItemsToEditProvider>
+            <CategoryProvider>
+              <ItemsToEditProvider>
+                  <UploadProvider>
+                        <Header/>
+                        <Component {...pageProps} />
+                  </UploadProvider>
+                </ItemsToEditProvider>
+            </CategoryProvider>
           </AuthProvider>
         </IsLoginOpenedProvider>
       </Provider>
