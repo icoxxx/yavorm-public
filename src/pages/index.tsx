@@ -1,12 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
-import { useAuth } from "../utils/AuthContext";
-import { useDispatch, useSelector } from "react-redux";
-import { RentalItem, getItems, setItems } from "../store/rentalItems/dataSlice";
-import { AppDispatch, RootState } from "../store/store";
 import SpeakersCanvas from "@/components/SpeakersCanvas";
 import FadeIn from "@/components/FadeIn";
-import { fromBottom, fromLeft80, fromRight } from "@/utils/animationVariants";
+import {fromLeft80} from "@/utils/animationVariants";
 import homeImg from '../assets/images/bg-image-2.jpg';
 import Image from "next/image";
 import Head from 'next/head';
@@ -17,7 +13,6 @@ import Link from "next/link";
 import Services from "@/components/Services";
 import HomeWedding from "@/components/HomeWedding";
 import Contacts from "@/components/Contacts";
-import BlogsCarousel from "@/components/BlogsCarousel";
 import { motion } from "framer-motion";
 import { BlogItem } from "@/store/blogItems/blogSlice";
 
