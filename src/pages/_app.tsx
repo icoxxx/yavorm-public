@@ -9,6 +9,7 @@ import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import Header from "@/components/Header";
 import { IsLoginOpenedProvider } from "@/utils/LoginModalContext";
 import { CategoryProvider } from "@/utils/RentalCategoryContext";
+import Footer from "@/components/Footer";
 
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -25,6 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   <UploadProvider>
                         <Header/>
                         <Component {...pageProps} />
+                        <Footer/>
                   </UploadProvider>
                 </ItemsToEditProvider>
             </CategoryProvider>

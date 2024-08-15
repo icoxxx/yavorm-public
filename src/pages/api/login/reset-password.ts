@@ -5,16 +5,13 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { createRouter } from 'next-connect';
 import connectDB from '@/lib/connectMongo';
-import { connectToDatabase } from '@/lib/apiMiddleware';
-import { Db } from 'mongodb';
 import Users from '@/Models/Users';
 
-const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>) => {
+const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       await connectDB();
-      const database = await connectToDatabase();
-      await handler(req, res, database);
+      await handler(req, res);
     } catch (error) {
       console.error('Error connecting to database:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -44,7 +41,7 @@ const resetRouter = createRouter<NextApiRequest, NextApiResponse>();
 
 resetRouter.use(cors(corsOptions));
 
-resetRouter.post(withDatabase(async (req:NextApiRequest, res: NextApiResponse, db: Db) => {
+resetRouter.post(withDatabase(async (req:NextApiRequest, res: NextApiResponse) => {
     const { token, newPassword } = req.body;
     try {
       const decoded = jwt.verify(token, resetPasswordSecret) as { username: string, token: string };

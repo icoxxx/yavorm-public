@@ -6,8 +6,6 @@ import { createRouter } from 'next-connect';
 import Users from '@/Models/Users';
 import dotenv from 'dotenv';
 import connectDB from '@/lib/connectMongo';
-import { connectToDatabase } from '@/lib/apiMiddleware';
-import { Db } from 'mongodb';
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -23,12 +21,11 @@ if (!jwtSecret || !captchaSecret) {
     throw new Error('Environment variable JWT_SECRET must be set');
   }
 
-  const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>) => {
+  const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) => {
     return async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         await connectDB();
-        const database = await connectToDatabase();
-        await handler(req, res, database);
+        await handler(req, res);
       } catch (error) {
         console.error('Error connecting to database:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -41,7 +38,7 @@ if (!jwtSecret || !captchaSecret) {
 
   loginRouter.use(cors(corsOptions));
 
-  loginRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  loginRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         const { username, password, captcha } = req.body;

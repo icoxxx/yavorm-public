@@ -11,7 +11,6 @@ import Image from "next/image";
 import FadeIn from "./FadeIn";
 import { fromLeft } from "@/utils/animationVariants";
 import { RentalItemType, BlogItemType, GalleryItemType } from "@/types/typesExport";
-import RentalItems from "./RentalItems";
 import { addBlogItem } from "@/store/blogItems/blogSlice";
 
 const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDescription, modelName, setModelName, rentalCategory, setRentalCategory, fileInputRef, handleFileChange, handleForm }) => {
@@ -104,7 +103,8 @@ const UploadForm: React.FC = ()=> {
       const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
       const blogFileInputRef = useRef<HTMLInputElement>(null);
       const [blogFile, setBlogFile] = useState<File | null>(null);
-      const [uploadedItem, setUploadedItem] = useState<any>(null);
+      // if displaying the uploaded item after upload completion:
+      // const [uploadedItem, setUploadedItem] = useState<any>(null);
       const [blogAuthor, setBlogAuthor] = useState('');
       const [modelName, setModelName] = useState('');
       const [rentalCategory, setRentalCategory] = useState('DJ миксери');
@@ -148,6 +148,16 @@ const UploadForm: React.FC = ()=> {
           formData.append('category', category);
         }
         else if(category === 'gallery'){
+          if(galleryFiles.length < 2 || galleryFiles.length > 10){
+            setUploadMessage('Мооля, изберете между 2 и 10 снимки!');
+            console.error('Моля изберете между 2 и 10 снимки!');
+            return
+          }
+          if(!galleryName){
+            setUploadMessage('Не сте добавили име на галерията');
+            console.error('No Gallery NAME');
+            return
+          }
           formData.append('galleryName', galleryName);
           galleryFiles && galleryFiles.forEach((file) => formData.append('images', file)); 
           formData.append('category', category);
@@ -177,12 +187,13 @@ const UploadForm: React.FC = ()=> {
 
           console.log(newItem.item)
 
-          setUploadedItem(newItem.item);
+          // not displaying the uploaded item for now 
+          // setUploadedItem(newItem.item);
 
           /////////////////////
           category === 'rental' && (dispatch(addItem(newItem.item)));
           category === 'blogs' && (dispatch(addBlogItem(newItem.item)));
-          //////////
+          ////////////////////
 
           setItemName("");
           setDescription("");
@@ -354,13 +365,6 @@ const UploadForm: React.FC = ()=> {
               <button onClick={cancelUpload}>Cancel Upload</button>
                 )}
         </div>
-        {uploadedItem && (
-        <div className="uploaded-item-wrapper">
-                 <RentalItems
-                  data = {uploadedItem}>
-                 </RentalItems>
-        </div>   
-        )}
       </section>
     )}
     </>     

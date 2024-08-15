@@ -5,6 +5,29 @@
 @import './components/$rental.scss';
 @import './components/$blogsPage.scss';
 @import './components/$singleBlogPage.scss';
+@import './components/$galleryPage.scss';
+@import './components/$footer.scss';
+
+@font-face {
+  font-family: 'Intro';
+  src: url('/fonts/Intro-Light-Alt.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Intro-Bold';
+  src: url('/fonts/Intro-Bold-Alt.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Urbano';
+  src: url('/fonts/urbano-bold.ttf');
+  font-weight: bold;
+  font-style: normal;
+}
 
 *{
     box-sizing: border-box;
@@ -33,30 +56,99 @@ body{
 .welcome-img-wrapper{
   position: relative;
   width: 100%;
+  height: 100vh;
   overflow: hidden;
   aspect-ratio: 16 / 9;
   img{
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: cover; /* Ensure the image covers the container */
   }
-  div{
-    line-height: 0.4;
+  .welcome-slider-container{
     position: absolute;
-    width: 100%;
-    top: 50%;
-    padding-left: 10%;
-    transform: translate(0%, -50%);
-    z-index: 2;
-    p{
-      color: white;
+    bottom: 40px;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    .welcome-slider{
+      display: inline-block;
+      white-space: nowrap;
+      &.add-animation{
+        animation: scroll-text 10s linear infinite;
+      }
+      .second{
+        padding-right: 100%;
+        display: inline-block;
+      }
+      p{
+      
+        color: white;
+      
+        font-size: 15vw;
+      
+        font-weight: 500;
+      
+        display: inline-block;
+
+        font-family: 'Urbano';
+        margin-right: 2%;
+        span{
+          color: #f44336;
+          font-size: 18vw;
+        }
+        @media (max-width: 768px) {
+          font-size: 20vw; // Adjust for mobile view
+          span{
+            font-size: 22vw;
+          }
+        }
+        
+      }
     }
   }
 }
 
+@keyframes scroll-text {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-52%);
+  }
+}
+
+.scroll-indicator-container {
+  position: absolute;
+  bottom: 1rem; // Converted from bottom-2
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 640px) { // Tailwind's 'xs' breakpoint is typically for screens up to 640px
+    bottom: 1rem; // Adjust if you need different bottom positioning for xs screens
+  }
+}
+
+.scroll-indicator-wrapper {
+  cursor: pointer;
+  width: 35px;
+  height: 64px;
+  border-radius: 1.5rem; // Converted from rounded-3xl
+  border: 4px solid #f44336; // Assuming `--secondary` is a CSS variable for the border color
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.5rem; // Converted from p-2
+}
+
+.scroll-indicator {
+  width: 0.75rem; // Converted from w-3
+  height: 0.75rem; // Converted from h-3
+  border-radius: 50%;
+  background-color: #f44336; // Assuming `--secondary` is a CSS variable for the background color
+  margin-bottom: 0.25rem; // Converted from mb-1
+}
 
 
 .delete-modal-wrapper{
@@ -466,14 +558,99 @@ body{
   }
 }
 
+.canvas-section{
+  position: relative;
+  width: 100%;
+  padding: 10px;
+}
+
 .canva{
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 500px;
-  background-color: wheat;
+  height: 90vh !important;
+  background-color: #2e2e2e;
+  border-radius: 20px;
+}
+
+.canvas-home-text{
+  position: absolute;
+  z-index: 1;
+  color: white;
+  font-family: 'Intro-Bold';
+  font-size: 10rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media screen and (min-width: 600px) and (max-width: 850px) {
+    font-size: 7rem !important;
+  }
+
+  @media screen and (max-width: 599px) {
+    font-size: 3rem;
+    top: 30px !important;
+  }
+}
+
+.lines{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
+
+.line {
+  position: relative;
+  width: 1px;
+  height: 100%;
+  top: 0;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.line::after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: 15vh;
+  width: 100%;
+  top: -50%;
+  left: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 75%, #ffffff 100%);
+  animation: drop 7s 0s infinite;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.4, 0.26, 0, 0.97);
+}
+
+.line:nth-child(1)::after {
+  animation-delay: 2s;
+}
+
+.line:nth-child(3)::after {
+  animation-delay: 2.5s;
+}
+
+.line:nth-child(5)::after {
+  animation-delay: 3s;
+}
+
+
+@keyframes drop {
+  0% {
+    top: -50%;
+  }
+  100% {
+    top: 110%;
+  }
 }
 
 .items{
@@ -521,15 +698,16 @@ body{
 
 .home-carousel-wrapper{
   position: relative;
-  margin: 60px 0px;
   #view-all-products{
     text-align: right;
+    padding-right: 15px;
+    padding-top: 15px;
   }
   #view-all-products a{
     text-decoration: none;
     font-weight: bold;
-    font-size: larger;
-    font-family: "Nunito", sans-serif;
+    font-size: 30px;
+    font-family: 'Intro-Bold';
     color: rgba(#000, 0.7);
   }
   #view-all-products a:hover{
@@ -551,30 +729,55 @@ body{
   background-color: gray;
 }
 
-.home-carousel-img-container{
+.home-carousel-content{
   position: relative;
   width: 100%;
   height: 380px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  .home-carousel-text{
-    position: absolute;
-    display: grid;
-    grid-template-columns: 1fr;
-    color: white;
-    font-weight: bold;
-    background-color: rgba(63, 81, 181, 0.85);
-    padding: 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-  }
-  img{
-  position: absolute;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  .home-carousel-image-container{
+    position: relative;
     width: 100%;
-    height: auto;
-    object-fit: contain;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img{
+      position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+  }
+  .home-carousel-text-wrapper{
+    position: relative;
+    width: 100%;
+    @media screen and (max-width: 500px) {
+      display: flex;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+    .home-carousel-text{
+      display: grid;
+      grid-template-columns: 1fr;
+      color: white;
+      font-weight: bold;
+      font-family: 'Intro-Bold';
+      background-color: rgba(63, 81, 181, 0.85);
+      padding: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 30px;
+      @media screen and (max-width: 500px) {
+        font-size: 20px;
+        padding: 6px !important;
+      }
+    }
   }
 }
 
@@ -588,13 +791,17 @@ body{
   font-weight: bold;
   grid-row-start: 1;
   grid-column-start: 1;
-  font-size: 30px; /* match this with the parent .home-carousel-text's font-size */
+  font-size: 30px;
   --stack-height: calc(100% / var(--stacks) - 1px);
   --inverse-index: calc(calc(var(--stacks) - 1) - var(--index));
   --clip-top: calc(var(--stack-height) * var(--index));
   --clip-bottom: calc(var(--stack-height) * var(--inverse-index));
   clip-path: inset(var(--clip-top) 0 var(--clip-bottom) 0);
   animation: stack 1000ms cubic-bezier(.46,.29,0,1.24) 1 backwards calc(var(--index) * 120ms), glitch 2s ease infinite 2s alternate-reverse;
+  @media screen and (max-width: 500px) {
+    font-size: 20px;
+    padding: 6px !important;
+  }
 }
 
 .home-carousel-text.stack span:nth-child(odd) {
@@ -655,6 +862,14 @@ body{
   .home-services-section{
     position: relative;
     width: 100%;
+    padding: 20px;
+    .services-home-container{
+      position: relative;
+      width: 100%;
+      background-color: #2e2e2e;
+      border-radius: 20px;
+      padding-bottom: 50px;
+    }
   }
 
   .home-tilt-card-container{
@@ -718,12 +933,14 @@ body{
 
   .service-title{
     text-align: center;
+    color: white;
+    font-size: 5rem;
+    padding: 50px 0;
   }
 
   .services-wrapper{
     position: relative;
     width: 100%;
-    margin-top: 5rem; 
     display: flex; 
     flex-direction: row;
     flex-wrap: wrap; 
@@ -731,7 +948,13 @@ body{
     justify-content: center; 
   }
 
+  .home-wedding-section{
+    position: relative;
+    width: 100%;
+  }
+
   .home-wedding-wrapper{
+    position: relative;
     width: 100%;
     height: 500px;
     display: flex;
@@ -777,9 +1000,23 @@ body{
   }
 
   .blogs-wrapper{
+    position: relative;
     width: 100%;
-    height: 500px;
     text-align: center;
+    padding: 20px;
+    .blogs-home-container{
+      width: 100%;
+      position: relative;
+      background-color: #2e2e2e;
+      border-radius: 20px;
+      padding-bottom: 50px;
+      .home-blogs-title{
+        font-size: 3rem;
+        color: white;
+        font-family: 'Intro-Bold';
+        padding: 30px 0;
+      }
+    }
   }
 
   .contacts-wrapper{
@@ -803,32 +1040,10 @@ body{
     }
   }
 
-  @media screen and (max-width: 500px) {
-    .home-wedding-wrapper{
-      .home-wedding-white{
-        padding: 30px;
-        h2{
-          font-size: 18px;
-        }
-        p{
-          font-size: 14px;
-        }
-      }
-      .home-wedding-gray{
-        img{
-          width: 60px;
-          height: 60px;
-        }
-        p{
-          font-size: 14px;
-        }
-      }
-    }
-  }
-
   @media screen and (max-width: 890px) {
     .home-wedding-wrapper{
       flex-direction: column;
+      height: auto;
       .home-wedding-white{
         width: 100%;
       }
@@ -849,7 +1064,34 @@ body{
     }
   }
 
+  @media screen and (min-width: 0px) and (max-width: 410px) {
+    .home-tilt-card-container{
+      width: 100%;
+    }
+    .services-wrapper{
+      padding: 10px;
+    }
+  }
+
+  @media screen and (min-width: 411px) and (max-width: 698px) {
+    .home-tilt-card-container{
+      width: 360px;
+    }
+  }
+
   @media screen and (max-width: 699px) {
+    .services-home-container{
+      .service-title{
+        font-size: 3rem;
+      }
+    }
+    .blogs-home-container{
+      padding: 20px;
+      .home-blogs-title{
+        font-size: 2rem !important;
+      }
+    }
+
     .hamb-button{
       margin-left: 20px;
     }
@@ -867,16 +1109,48 @@ body{
     .item, .indicator{
       display: none;
     }
-    .home-tilt-card-container{
-      width: 360px;
+
+    .home-wedding-wrapper{
+      .home-wedding-white{
+        padding: 30px;
+        h2{
+          font-size: 18px;
+        }
+        p{
+          font-size: 14px;
+        }
+      }
+      .home-wedding-gray{
+        padding: 30px;
+        img{
+          width: 60px;
+          height: 60px;
+        }
+        p{
+          font-size: 14px;
+        }
+      }
     }
   }
 
+@media screen and (max-width: 499px) {
+  .contact-form{
+    padding: 20px;
+  }
+  .contact-container{
+    padding: 20px;
+  }
+  .contact-text-wrapper{
+    h2{
+      font-size: 19px;
+    }
+  }
+}
   
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 850px) {
   .canva{
-    height: 400px;
+    height: 90vh;
   }
 }
 

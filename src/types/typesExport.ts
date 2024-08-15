@@ -24,9 +24,9 @@ export type RentalItemType = {
   }
 
  export type GalleryItemType = {
-    date: string;
     galleryName: string;
-    images: string;
+    images: string[];
+    date: string;
     category: string;
     __v: number;
     _id: string;

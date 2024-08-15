@@ -151,6 +151,21 @@ const BlogsPage: React.FC <BlogPageProps> = ({title, description, imageUrl, blog
 
     return(
         <>
+          <Head>
+            <title>{title}</title>
+            <meta
+              name="format-detection"
+              content="telephone=no, date=no, email=no, address=no"
+            />
+            <link rel="icon" href={imageUrl} type="image/jpeg"/>
+            <meta name="description" content={description} />
+            <meta property="og:title" content={title} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={imageUrl} />
+            <meta property="twitter:title" content={title} />
+            <meta property="twitter:description" content={description} />
+            <meta property="twitter:image" content={imageUrl} />
+        </Head>
         <main className="blogs-page-wrapper">
             <section style={{position: 'relative', width: '100%'}}>
                 <FadeIn key={currentPage} direction={fromLeft80} thresh={0} delay={0} className="blogs-flex-wrapper">

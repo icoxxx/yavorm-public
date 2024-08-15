@@ -1,0 +1,99 @@
+
+
+.gallery-page-wrapper{
+    position: relative;
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 50px;
+    section{
+        width: 100%;
+    }
+    .home-carousel-container{
+        button{
+            z-index: 0 !important;
+        }
+        background-color: #151030;
+        border-radius: 20px;
+    }
+    .gallery-name{
+        text-align: center;
+        font-family: 'Intro-Bold';
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+    .gallery-carousel-items{
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 20px ;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .gallery-carousel-img-container{
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* Aspect ratio of 16:9 (height/width * 100) */
+        height: 0; /* Let padding-bottom control the height */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        .gallery-carousel-img{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            &.aspect-ratio-16-9{
+                object-fit: cover;
+            }
+            &.aspect-ratio-9-16{
+                object-fit: contain;
+            }
+            &:hover{
+                cursor: pointer;
+            }
+        }
+      }
+      .modal.is-open{
+        padding: 20px;
+        z-index: 11111;
+        .opened-image-container{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            .close-image{
+                position: absolute;
+                z-index: 11112;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+            }
+            .opened-image{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .gallery-page-wrapper{
+        padding: 20px;
+    }
+}

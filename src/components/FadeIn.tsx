@@ -11,9 +11,10 @@ interface FadeInProps {
   };
   className?: string;
   thresh?: number;
+  duration?: number;
 }
 
-const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction, className = '', thresh = 0.5}) => {
+const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction, className = '', thresh = 0.5, duration = 0.5}) => {
   const controls = useAnimation();
   const [ref, inView] = useInView({
     triggerOnce: true,  // Only trigger once
@@ -32,7 +33,7 @@ const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction, classNa
       className={className}
       initial="hidden"
       animate={controls}
-      transition={{ duration: 0.5, delay }}
+      transition={{ duration: duration, delay }}
       variants={direction} // direction - imported from animationVariants.ts from the component
       style={{ willChange: 'transform' }}  // Enable hardware acceleration
     >

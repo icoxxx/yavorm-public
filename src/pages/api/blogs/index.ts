@@ -3,13 +3,14 @@ import multer from 'multer';
 import { Db,} from 'mongodb';
 import { RequestHandler } from 'express';
 import BlogItem from '../../../Models/BlogSchema'; 
-import { connectToDatabase, getGridFSBucket } from '@/lib/apiMiddleware';
+//import { connectToDatabase, getGridFSBucket } from '@/lib/apiMiddleware';
 import path from 'path';
 import connectDB from '@/lib/connectMongo';
 import { createRouter, expressWrapper } from "next-connect";
 import cors from 'cors';
 import express from 'express';
 
+// commented GridFS file upload as the app wont need it for now, keeping it if there will be large file uploads
 
 function staticMiddleware(root: string) {
   return (req: NextApiRequest, res: NextApiResponse, next: any) => {
@@ -46,12 +47,12 @@ const uploadMiddleware: RequestHandler = (req: any, res, next) => {
   };
 
 // Middleware to ensure MongoDB connection is established
-const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>) => {
+const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => Promise<void>) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       await connectDB();
-      const database = await connectToDatabase();
-      await handler(req, res, database);
+      //const database = await connectToDatabase();
+      await handler(req, res /*, database*/);
     } catch (error) {
       console.error('Error connecting to database:', error);
      return res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -70,7 +71,7 @@ const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: ()
 
 
 // Get all items
-const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+const getAllItems = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
   try {
     const { page = 1, limit = 5 } = req.query;
     const skip = (Number(page) - 1) * Number(limit);
@@ -87,15 +88,20 @@ const getAllItems = async (req: NextApiRequest, res: NextApiResponse, db: Db) =>
 };
 
 // Create item with image upload
-const createItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+const createItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
   try {
     const { blogTitle, blogText, blogAuthor, instaLink, fbLink, category } = req.body;
     
     const image = req.file ? req.file.filename : '';
 
     const newItem = await BlogItem.create({ blogTitle, blogText, blogAuthor, instaLink, fbLink, image, category });
-    
-    if (req.file) {
+    return res.status(201).json({
+      success: true,
+      item: newItem,
+      message: 'Item created successfully!'
+    });
+
+   /* if (req.file) {
       const bucket = await getGridFSBucket();
       const uploadStream = bucket.openUploadStream(image);
       uploadStream.end(req.file.buffer);
@@ -118,7 +124,8 @@ const createItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
         item: newItem,
         message: 'Item created successfully without an image!'
       });
-    }
+    } */
+
   } catch (error) {
     console.error('Error creating item:', error);
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -128,11 +135,11 @@ const createItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
 const blogRouter = createRouter<NextApiRequest, NextApiResponse>();
 blogRouter.use(cors(corsOptions));
 blogRouter.use('/uploads/blogs', expressWrapper(staticMiddleware(uploadPath)));
-blogRouter.get(withDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+blogRouter.get(withDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     console.log('Handler reached for GET request');
-   await getAllItems(req, res, db);
+   await getAllItems(req, res /* , db */);
   }));
-blogRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+blogRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     console.log('Handler reached for POST request');
     uploadMiddleware(req as any, res as any, async (err: any) => {
       if (err) {
@@ -142,7 +149,7 @@ blogRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse, d
       }
       // Proceed with request body validation and item creation
       validateRequestBody(req, res, () => {
-        createItem(req, res, db);
+        createItem(req, res /* , db*/ );
       });
     });
   }));

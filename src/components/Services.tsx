@@ -3,7 +3,7 @@ import cdj3000 from '../assets/images/CDJ-3000.png';
 import {motion} from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import FadeIn from "./FadeIn";
-import { fromLeft, fromTop } from "@/utils/animationVariants";
+import { fromLeft, fromLeft80, fromTop } from "@/utils/animationVariants";
 import Image, { StaticImageData } from "next/image";
 import wedding from '../assets/images/wedding.jpeg';
 import sound$lights from '../assets/images/sound-lights.jpg';
@@ -29,7 +29,7 @@ const ServiceCard: React.FC<Service & { delay: number }> = ({index, name, descri
         scale={1}
         transitionSpeed={450}
     >
-        <FadeIn direction={fromLeft} delay={delay} className="home-tilt-card-container" thresh={0.5}>
+        <FadeIn direction={fromLeft} delay={delay} className="home-tilt-card-container" thresh={0.1} duration={0.35}>
                 <div className='tilt-content'>
                     <Image src={image} alt={name} quality={100} />
                 </div>
@@ -174,12 +174,9 @@ const Services: React.FC = ()=> {
 
     return(
         <>
-        <FadeIn direction={fromTop} className="">
-            <p className='service-title'>
-            Услуги
-            </p>
+        <FadeIn direction={fromLeft80} thresh={0.2} className="">
             <h2 className='service-title'>
-            YavorM
+            Услуги
             </h2>
         </FadeIn>
         <div className='services-wrapper' ref={containerRef}>

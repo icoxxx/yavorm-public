@@ -18,7 +18,7 @@
     padding: 50px;
 }
 
-.blogs-flex-wrapper{
+.blogs-flex-wrapper, .home-blogs-flex-wrapper{
     position: relative;
     display: flex;
     flex-direction: row;
@@ -40,7 +40,7 @@
     }
   }
 
-.blog-container{
+.blog-container, .home-blog-container{
     position: relative;
     width: 400px;
     height: 550px;
@@ -55,7 +55,7 @@
     color: white;
     overflow: hidden;
     transition: all 0.4s ease-in-out;
-    .blog-img-container{
+    .blog-img-container, .home-blog-img-container{
         position: relative;
         width: 100%;
         height: 250px;
@@ -67,7 +67,7 @@
             object-fit: cover;
         }
     }
-    .blog-text-container{
+    .blog-text-container, .home-blog-text-container{
         position: relative;
         width: 100%;
         flex: 1;
@@ -76,7 +76,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
-        .link-from-title{
+        .link-from-title, .home-link-from-title{
             all: unset;
         }
         h2{
@@ -87,12 +87,12 @@
         h2:hover{
             text-decoration: underline;
         }
-        .blog-text-sliced{
+        .blog-text-sliced, .home-blog-text-sliced{
             font-family: 'Intro-Bold' serif;
             font-size: 14px;
         }
     }
-    .blog-author-date{
+    .blog-author-date, .home-blog-author-date{
         display: flex;
         width: 100%;
         flex-direction: row;
@@ -103,7 +103,7 @@
             font-family: 'Intro-Bold';
         }
     }
-    a.button-to-blog{
+    a.button-to-blog, a.home-button-to-blog{
         all: unset;
         display: flex;
         align-items: center;
@@ -113,7 +113,7 @@
         border-radius: 12px;
         border-style: none;
         color: black;
-        background-color: #e91e63;
+        background-color: #f44336;
         cursor: pointer;
     }
 }
@@ -184,11 +184,11 @@
     .blogs-page-wrapper{
         padding: 20px;
     }
-    .blog-container{
+    .blog-container, .home-blog-container{
         h2{
             font-size: 18px;
         }
-        .blog-img-container{
+        .blog-img-container, .home-blog-img-container{
             height: auto;
             aspect-ratio: 16/9;
             img{

@@ -22,4 +22,9 @@ export const fromLeft = {
   export const fromLeft80 = {
     visible: { opacity: 1, transform: `translateX(0)` },
     hidden: { opacity: 0, transform: `translateX(-80px)` }
+  }
+  
+  export const fromRight80 = {
+    visible: { opacity: 1, transform: `translateX(0)` },
+    hidden: { opacity: 0, transform: `translateX(80px)` }
   }    

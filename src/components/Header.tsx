@@ -8,6 +8,7 @@ import { useAuth } from '@/utils/AuthContext';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import logo from '../assets/images/Yavor-M-logo-color.svg';
+import useScrollToContacts from '@/utils/useScrollToContacts';
 
 const Header: React.FC = ()=> {
     const [isMenuOpen, setIsMenuOPen] = useState<boolean | undefined>(undefined);
@@ -17,20 +18,13 @@ const Header: React.FC = ()=> {
     const { isAuthenticated, logout, isAdmin } = useAuth();
     const [isInitial, setIsInitial] = useState(true);
     const router = useRouter();
+    const scrollToContacts = useScrollToContacts();
     
     useEffect(() => {
         setIsClient(true);
         setWindowWidth(window.innerWidth)
       }, [])
 
-      const scrollToContacts = ()=> {
-        if(isClient){
-          const sendMail = document.querySelector('.contacts-wrapper');
-          if (sendMail){
-              sendMail.scrollIntoView({behavior: 'smooth'});
-          }
-        }
-    }
 
       const handleScroll = ()=> {
         if(isClient){
@@ -154,7 +148,7 @@ const Header: React.FC = ()=> {
                 logout()
                 router.push('/')
               }
-            }} 
+            }}  
             key={`${index}-${navLink.text}`} 
             href={navLink.link}
             >
@@ -169,9 +163,9 @@ const Header: React.FC = ()=> {
             :
             <div
             className='contacts-hidden' 
-            onClick={()=> {handleMenuToggle(), router.push('/'), setTimeout(() => {
-              scrollToContacts();
-            }, 600);}}
+            onClick={()=> {handleMenuToggle(), setTimeout(() => {
+              scrollToContacts()
+            }, 100);}}
             key={`${index}-${navLink.text}`} 
             >
               {navLink.text}

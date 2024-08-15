@@ -8,8 +8,6 @@ import cors from 'cors';
 import { createRouter} from 'next-connect';
 import Users from '@/Models/Users';
 import connectDB from '@/lib/connectMongo';
-import { connectToDatabase } from '@/lib/apiMiddleware';
-import { Db } from 'mongodb';
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -31,12 +29,11 @@ if (!jwtSecret || !gmailAcc) {
     throw new Error('Environment variables ADMIN_USERNAME, ADMIN_PASSWORD, and JWT_SECRET must be set');
   }
 
-  const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>) => {
+  const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) => {
     return async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         await connectDB();
-        const database = await connectToDatabase();
-        await handler(req, res, database);
+        await handler(req, res);
       } catch (error) {
         console.error('Error connecting to database:', error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -81,7 +78,7 @@ if (!jwtSecret || !gmailAcc) {
   forgotRouter.use(cors(corsOptions));
 
 
-  forgotRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  forgotRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse) => {
     const { email } = req.body;
     const existingUser = await Users.findOne({email: email});
     if (!existingUser) {

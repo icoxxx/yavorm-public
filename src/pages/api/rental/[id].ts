@@ -6,11 +6,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path'
-import { connectToDatabase, getGridFSBucket } from '@/lib/apiMiddleware';
+//import { connectToDatabase, getGridFSBucket } from '@/lib/apiMiddleware';
 import connectDB from '@/lib/connectMongo';
 import { createRouter, expressWrapper } from "next-connect";
 import cors from 'cors';
 import express from 'express';
+
+
+// commented GridFS file upload as the app wont need it for now, keeping it if there will be large file uploads
 
 const corsOptions = {
   origin: 'http://localhost:3000',
@@ -46,12 +49,12 @@ const storage = multer.diskStorage({
 
 
 // Middleware to ensure MongoDB connection is established
-const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiResponse, db: Db) => Promise<void>) => {
+const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => Promise<void>) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       await connectDB();
-      const database = await connectToDatabase();
-      await handler(req, res, database);
+      //const database = await connectToDatabase();
+      await handler(req, res /*, database*/);
     } catch (error) {
       console.error('Error connecting to database:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -60,7 +63,7 @@ const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiRes
 };
 
 //get item by ID
-const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+const getSingleItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/ ) => {
   try {
     const {id} = req.query;
 
@@ -80,7 +83,7 @@ const getSingleItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) 
 };
 
 // Update item by ID
-const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     try {
       const itemId = req.query.id as string;
       const { description, itemName, modelName, rentalCategory, category} = req.body;
@@ -104,7 +107,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
         }
   
       if (req.file && image) {
-        const bucket = await getGridFSBucket();
+        /*const bucket = await getGridFSBucket();
   
         // Delete the old image from GridFS
         if (oldImage) {
@@ -116,7 +119,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           } else {
             console.error('Old file not found in GridFS:', oldImage);
           }
-        }
+        } */
   
         // delete the old img from fs
         fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', oldImage), (err) => {
@@ -126,10 +129,9 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
           }
           console.log('File deleted successfully from disk:', oldImage);
         });
-  
         //upload the new img to GridFS
   
-        const uploadStream = bucket.openUploadStream(image);
+        /*const uploadStream = bucket.openUploadStream(image);
         uploadStream.end(req.file.buffer);
   
         uploadStream.on('error', (error) => {
@@ -143,7 +145,13 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
             item: updatedItem,
             message: 'Item updated and file uploaded successfully!'
           });
+        }); */
+        return res.status(200).json({
+          success: true,
+          item: updatedItem,
+          message: 'Item updated and file uploaded successfully!'
         });
+
       } else {
         res.status(200).json({
           success: true,
@@ -158,7 +166,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
   };
   
   // Delete item by ID
-  const deleteItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  const deleteItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     try {
       const itemId = req.query.id as string;
       if (!mongoose.Types.ObjectId.isValid(itemId)) {
@@ -174,30 +182,34 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
       }
   
       if (item.image) {
-        const bucket = await getGridFSBucket();
+        fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', item.image), (err) => {
+          if (err) {
+            console.error('Error deleting file from disk:', err);
+            return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
+          }
+          console.log('File deleted successfully from disk:', item.image);
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Item and file deleted successfully!'
+          });
+        });
+
+        /*const bucket = await getGridFSBucket();
         const files = await bucket.find({ filename: item.image }).toArray();
   
         if (files.length > 0) {
           const fileId = files[0]._id;
           await bucket.delete(fileId);
-          
-          fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', item.image), (err) => {
-            if (err) {
-              console.error('Error deleting file from disk:', err);
-              return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
-            }
-            console.log('File deleted successfully from disk:', item.image);
-            res.status(200).json({
-              success: true,
-              message: 'Item and file deleted successfully!'
-            });
-          });
         } else {
           res.status(404).json({ success: false, message: 'File not found in GridFS' });
           return;
-        }
+        }*/
       } else {
-          res.status(404).json({ success: false, message: 'Item does not have an image' });
+        return res.status(200).json({
+          success: true,
+          message: 'Item deleted successfully without founding image file!'
+        });
         }
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -208,7 +220,7 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
   const testIdRouter = createRouter<NextApiRequest, NextApiResponse>();
   testIdRouter.use(cors(corsOptions));
   testIdRouter.use('/uploads/rental', expressWrapper(staticMiddleware(uploadPath)));
-  testIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
+  testIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
 
       uploadMiddleware(req as any, res as any, async (err: any) => {
           if (err) {
@@ -216,16 +228,16 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse, db: Db) => 
             res.status(500).json({ success: false, message: 'Error uploading file' });
             return;
           }
-          await updateItem(req, res, db);
+          await updateItem(req, res /*, db*/);
          });
 
   }));
-  testIdRouter.delete(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
-    await deleteItem(req, res, db);
+  testIdRouter.delete(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
+    await deleteItem(req, res /*, db*/ );
   }))
 
-  testIdRouter.get(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse, db: Db) => {
-    await getSingleItem(req, res, db);
+  testIdRouter.get(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
+    await getSingleItem(req, res /*, db*/);
   }))
 
   export const config = {

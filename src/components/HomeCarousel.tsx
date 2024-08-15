@@ -101,19 +101,23 @@ const HomeCarousel: React.FC = ()=> {
                     carouselProps.map((el, index)=> {
                         return(
                             <div key={`home-car-${index}`} className="home-carousel-items">
-                                <div className="home-carousel-img-container">
-                                    <Image className="home-carousel-img" src={el.image} quality={100} alt={el.text} />
-                                    <div 
-                                    className="home-carousel-text stack" 
-                                    style={{ "--stacks": 3} as any}
-                                    onClick={()=> {
-                                        setCategoryToLoad(el.text);
-                                        router.push('/rental');
-                                    }}
-                                    >
-                                        <span style={{"--index": 0} as any}>{el.text}</span>
-                                        <span style={{"--index": 1} as any}>{el.text}</span>
-                                        <span style={{"--index": 2} as any}>{el.text}</span>
+                                <div className="home-carousel-content">
+                                    <div className="home-carousel-image-container">
+                                        <Image className="home-carousel-img" src={el.image} quality={100} alt={el.text} />
+                                    </div>
+                                    <div className="home-carousel-text-wrapper">
+                                        <div 
+                                        className="home-carousel-text stack" 
+                                        style={{ "--stacks": 3} as any}
+                                        onClick={()=> {
+                                            setCategoryToLoad(el.text);
+                                            router.push('/rental');
+                                        }}
+                                        >
+                                            <span style={{"--index": 0} as any}>{el.text}</span>
+                                            <span style={{"--index": 1} as any}>{el.text}</span>
+                                            <span style={{"--index": 2} as any}>{el.text}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -29,9 +29,9 @@ const Computers: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
         <pointLight intensity={3} />
         <primitive
           object={scene}
-          scale={isMobile ? 1 : 1.2}
-          position={isMobile ? [0, -2.5, -0.8] : [0, 0, 0]}
-          rotation={[0, 0, 0,]}
+          scale={isMobile ? 0.4 : 0.8}
+          position={isMobile ? [0, 0, 0] : [0, 0, 0]}
+          rotation={[0, -1, 0,]}
         />
       </group>
   );
@@ -41,7 +41,7 @@ const SpeakersCanvas: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 750px)");
+    const mediaQuery = window.matchMedia("(max-width: 850px)");
     setIsMobile(mediaQuery.matches);
 
     const handleMediaQueryChange = (event: MediaQueryListEvent) => {
