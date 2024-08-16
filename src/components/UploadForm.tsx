@@ -14,6 +14,13 @@ import { RentalItemType, BlogItemType, GalleryItemType } from "@/types/typesExpo
 import { addBlogItem } from "@/store/blogItems/blogSlice";
 
 const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDescription, modelName, setModelName, rentalCategory, setRentalCategory, fileInputRef, handleFileChange, handleForm }) => {
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length <= 80) {
+      setDescription(value);
+    }
+  };
+
   return (
     <form className="upload-form" id="upload-rental" onSubmit={handleForm}>
       <label htmlFor="itemName">Име/марка на продукта</label>
@@ -35,7 +42,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
       </select>
 
       <label htmlFor="description">Описание</label>
-      <input type="text" id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} autoComplete="off" />
+      <input type="text" id="description" name="description" maxLength={80} value={description} onChange={handleDescriptionChange} autoComplete="off" />
 
       <label htmlFor="file">Снимка</label>
       <input type="file" id="file" name="file" accept="image/jpeg, image/png" onChange={handleFileChange} ref={fileInputRef} />
@@ -89,13 +96,13 @@ const GalleryForm: React.FC<any> = ({ galleryName, setGalleryName, galleryFilesI
 const UploadForm: React.FC = ()=> {
       const [itemName, setItemName] = useState("");
       const [description, setDescription] = useState("");
-      const [category, setCategory] = useState('');
+      const [category, setCategory] = useState('rental');
       const [file, setFile] = useState<File | null>(null); // Change to File | null to handle file uploads
       const [isUploading, setIsUploading] = useState(false);
       const {uploadMessage, setUploadMessage, cancelUpload } = useUploadContext();
       const fileInputRef = useRef<HTMLInputElement>(null);
       const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
-      const [activeCategory, setActiveCategory] = useState('');
+      const [activeCategory, setActiveCategory] = useState('РЕНТАЛ');
       const [blogTitle, setBlogTitle] = useState('');
       const [blogText, setBlogText] = useState('');
       const [galleryName, setGalleryName] = useState('');
@@ -224,7 +231,7 @@ const UploadForm: React.FC = ()=> {
             galleryFilesInputRef.current.value = '';
           }
     
-          setUploadMessage(`Успешно добавихте продукт в раздел ${activeCategory}`);
+          setUploadMessage(`Успешно добавихте запис в раздел ${activeCategory}`);
           console.log('Form submitted! Yay!');
         } catch (err: any) {
           if (err.name === 'AbortError') {

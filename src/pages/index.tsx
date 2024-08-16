@@ -15,6 +15,7 @@ import HomeWedding from "@/components/HomeWedding";
 import Contacts from "@/components/Contacts";
 import { motion } from "framer-motion";
 import { BlogItem } from "@/store/blogItems/blogSlice";
+import {MdArrowForward} from 'react-icons/md';
 
 type HomeProps = {
   title: string;
@@ -119,10 +120,10 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
             </section>
 
             <section className="home-carousel-wrapper">
-              <HomeCarousel/>
               <div id="view-all-products">
-                <Link href={'/rental'}>ВИЖ ВСИЧКИ</Link>
+                <Link href={'/rental'}>ВИЖ ВСИЧКИ <span><MdArrowForward/></span></Link>
               </div>
+              <HomeCarousel/>
             </section>
 
             <section className="home-services-section">

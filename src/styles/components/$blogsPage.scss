@@ -80,7 +80,7 @@
             all: unset;
         }
         h2{
-            font-family: 'Intro';
+            font-family: 'Intro-Bold';
             font-weight: bold;
             cursor: pointer;
         }
@@ -88,8 +88,9 @@
             text-decoration: underline;
         }
         .blog-text-sliced, .home-blog-text-sliced{
-            font-family: 'Intro-Bold' serif;
+            font-family: 'Intro';
             font-size: 14px;
+            line-height: 1.3;
         }
     }
     .blog-author-date, .home-blog-author-date{

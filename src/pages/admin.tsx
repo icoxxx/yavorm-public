@@ -1,4 +1,3 @@
-import RentalItems from "@/components/RentalItems";
 import UploadForm from "@/components/UploadForm";
 import { RootState } from "@/store/store";
 import { useAuth } from "@/utils/AuthContext";
@@ -10,7 +9,6 @@ const Admin: React.FC = ()=> {
     const {isAuthenticated, isAdmin} = useAuth();
     const router = useRouter();
     const [redirectSeconds, setRedirectSeconds] = useState(3);
-    const items = useSelector((state: RootState) => state.data.items);
 
     useEffect(() => {
         const interval = setInterval(() => {

@@ -75,8 +75,9 @@ const Header: React.FC = ()=> {
         {text: 'CONTACT', color: "#9c27b0", link: ''},
         {text: 'RENTAL', color: "#e91e63", link: '/rental'},
         {text: 'BLOGS', color: '#673ab7', link: '/blogs/page/1'},
-        {text: 'LOGIN', color: '#3f51b5', link: ''},
-        {text: 'ADMIN', color: '#05a89b', link: '/admin'},
+        {text: 'GALLERY', color: '#3f51b5', link: '/gallery'},
+        {text: 'LOGIN', color: '#05a89b', link: ''},
+        {text: 'ADMIN', color: '#158c4f', link: '/admin'},
       ];
 
     const $root:any = useRef();
