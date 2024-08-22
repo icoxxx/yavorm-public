@@ -35,6 +35,7 @@ const SingleBlogPage: React.FC<SingleBlogPropsType> = ({blogItem, title, descrip
     const router = useRouter();
     const currentUrl = typeof window !== 'undefined' ? window.location.origin + router.asPath : '';
     const asideBlog: BlogItem = blogItem._id === blogs[0]._id ? blogs[1] : blogs[0];
+    const observerRef = useRef<MutationObserver | null>(null);
 
     useEffect(() => {
       if(blogItem.fbLink){
@@ -73,12 +74,13 @@ const SingleBlogPage: React.FC<SingleBlogPropsType> = ({blogItem, title, descrip
           loadFacebookSDK();
       }
 
+      const loadInstagramEmbed = () => {
+        if ((window as any).instgrm) {
+          (window as any).instgrm.Embeds.process();
+        }
+      };
+
       if(blogItem.instaLink){
-        const loadInstagramEmbed = () => {
-            if ((window as any).instgrm) {
-              (window as any).instgrm.Embeds.process();
-            }
-          };
         
           // Create and append the Instagram embed script if not already loaded
           if (!instaScriptRef.current) {
@@ -94,8 +96,14 @@ const SingleBlogPage: React.FC<SingleBlogPropsType> = ({blogItem, title, descrip
           } else {
             loadInstagramEmbed();
           }
+
+          const observer = new MutationObserver(() => {
+            loadInstagramEmbed();
+          });
+    
+          observer.observe(document.body, { childList: true, subtree: true });
+          observerRef.current = observer;
       }
-  
       // Cleanup the script on component unmount
       return () => {
         if (fbScriptRef.current) {
@@ -105,6 +113,11 @@ const SingleBlogPage: React.FC<SingleBlogPropsType> = ({blogItem, title, descrip
         if (instaScriptRef.current) {
             document.body.removeChild(instaScriptRef.current);
             instaScriptRef.current = null;
+          }
+
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+            observerRef.current = null;
           }
       };
     }, [blogItem]);
@@ -171,69 +184,78 @@ const SingleBlogPage: React.FC<SingleBlogPropsType> = ({blogItem, title, descrip
         </Head>
 
         <main className="single-blog-page-wrapper">
+          <div className="single-blog-hoc">
+                  <div className="lines">
+                     <div className="line"></div>
+                     <div className="line"></div>
+                     <div className="line"></div>
+                     <div className="line"></div>
+                     <div className="line"></div>
+                   </div>
             {blogItem && (
-            <article className="single-blog-wrapper">
-                <FadeIn key={`${currentUrl}-main`} direction={fromLeft} thresh={0} delay={0} className="single-blog-container">
-                    <div className="single-blog-data">
-                        <h1>{blogItem.blogTitle}</h1>
-                        <div className="single-blog-img-wrapper">
-                            {blogItem.image && (<Image fill quality={100} alt={`${blogItem.blogTitle}-image`} src={`/uploads/blogs/${blogItem.image}`} />)}
-                        </div>
-                        <div className="single-blog-author-date">
-                            <p>{blogItem.blogAuthor}</p> <p>{formatDate(blogItem.date)}</p>
-                        </div>
-                        <div className="blog-share-buttons-container">
-                            <div className="share-buttons">
-                                <FacebookShareButton url={currentUrl}>
-                                    <FacebookIcon size={40} round/>
-                                </FacebookShareButton>
-
-                                <WhatsappShareButton title={title} url={currentUrl}>
-                                    <WhatsappIcon size={40} round/>
-                                </WhatsappShareButton>
-
-                                <ViberShareButton title={title} url={currentUrl}>
-                                    <ViberIcon size={40} round/>
-                                </ViberShareButton>
-                            </div>
-                            <div>СПОДЕЛИ</div>
-                        </div>
-                        <div className="single-blog-main-text">
-                            {blogItem.blogText && (
-                              renderParagraphs(blogItem.blogText)
-                            )}
-                        </div>
-                        <div className="fb-post-container">
-                            {blogItem.fbLink && (
-                                <FacebookEmbedComponent 
-                                url={blogItem.fbLink} 
-                                className="fb-post"
-                                >
-                                </FacebookEmbedComponent>
-                            )}
-                        </div>
-                        {blogItem.instaLink && (
-                          <div className="insta-post">
-                            <InstagramEmbed url={blogItem.instaLink} />
+              <article className="single-blog-wrapper">
+                  <FadeIn key={`${currentUrl}-main`} direction={fromLeft} thresh={0} delay={0} className="single-blog-container">
+                      <div className="single-blog-data">
+                          <h1>{blogItem.blogTitle}</h1>
+                          <div className="single-blog-img-wrapper">
+                              {blogItem.image && (<Image fill quality={100} alt={`${blogItem.blogTitle}-image`} src={`/uploads/blogs/${blogItem.image}`} />)}
                           </div>
-                        )}
-                    </div>
-                </FadeIn>
-                    {asideBlog && (
-                        <FadeIn key={`${currentUrl}-aside`} delay={0} thresh={0} direction={fromRight} className="single-blog-aside">
-                            <div className="aside-blog">
-                                    <div className="aside-news">АКТУАЛНО ОТ БЛОГА</div>
-                                    <div className="aside-blog-img-wrapper">
-                                    {asideBlog.image && (<Image fill quality={100} src={`/uploads/blogs/${asideBlog.image}`} alt={`${asideBlog.blogTitle}-image`}/>)}
-                                    </div>
-                                    <Link href={`/blogs/${asideBlog._id}`}><h4>{asideBlog.blogTitle}</h4></Link>
-                                    <Link className="button-to-blog" href={`/blogs/${asideBlog._id}`}>КЪМ СТАТИЯТА</Link>
+                          <div className="single-blog-author-date">
+                              <p>{blogItem.blogAuthor}</p> <p>{formatDate(blogItem.date)}</p>
+                          </div>
+                          <div className="blog-share-buttons-container">
+                              <div className="share-buttons">
+                                  <FacebookShareButton url={currentUrl}>
+                                      <FacebookIcon size={40} round/>
+                                  </FacebookShareButton>
+
+                                  <WhatsappShareButton title={title} url={currentUrl}>
+                                      <WhatsappIcon size={40} round/>
+                                  </WhatsappShareButton>
+
+                                  <ViberShareButton title={title} url={currentUrl}>
+                                      <ViberIcon size={40} round/>
+                                  </ViberShareButton>
+                              </div>
+                              <div>СПОДЕЛИ</div>
+                          </div>
+                          <div className="single-blog-main-text">
+                              {blogItem.blogText && (
+                                renderParagraphs(blogItem.blogText)
+                              )}
+                          </div>
+                          <div className="fb-post-container">
+                              {blogItem.fbLink && (
+                                  <FacebookEmbedComponent 
+                                  url={blogItem.fbLink} 
+                                  className="fb-post"
+                                  >
+                                  </FacebookEmbedComponent>
+                              )}
+                          </div>
+                          {blogItem.instaLink && instaScriptRef && (
+                            <div className="insta-post">
+                              <InstagramEmbed url={blogItem.instaLink} />
                             </div>
-                            <Image width={150} height={150} quality={100} src={logo} alt="logo" />  
-                        </FadeIn>
-                    )}
-            </article>
-            )}
+                          )}
+                      </div>
+                  </FadeIn>
+                      {asideBlog && (
+                          <FadeIn key={`${currentUrl}-aside`} delay={0} thresh={0} direction={fromRight} className="single-blog-aside">
+                              <div className="aside-blog">
+                                      <div className="aside-news">АКТУАЛНО ОТ БЛОГА</div>
+                                      <div className="aside-blog-img-wrapper">
+                                      {asideBlog.image && (<Image fill quality={100} src={`/uploads/blogs/${asideBlog.image}`} alt={`${asideBlog.blogTitle}-image`}/>)}
+                                      </div>
+                                      <Link href={`/blogs/${asideBlog._id}`}><h4>{asideBlog.blogTitle}</h4></Link>
+                                      <Link className="button-to-blog" href={`/blogs/${asideBlog._id}`}>КЪМ СТАТИЯТА</Link>
+                              </div>
+                              <Image width={150} height={150} quality={100} src={logo} alt="logo" />  
+                          </FadeIn>
+                      )}
+              </article>
+              )}
+          </div>
         </main>
         </>
     )
@@ -243,8 +265,14 @@ export const getServerSideProps : GetServerSideProps = async (context)=> {
     try {
         const {id} = context.params!;
         const [blogRes, allBlogsRes] = await Promise.all([
-            fetch(`http://localhost:3000/api/blogs/${id}`),
-            fetch('http://localhost:3000/api/blogs')
+            fetch(`http://localhost:3000/api/blogs/${id}`,{
+              method: 'GET',
+              cache: 'no-cache',
+            }),
+            fetch('http://localhost:3000/api/blogs',{
+              method: 'GET',
+              cache: 'no-cache',
+            })
         ]);
 
         if(!blogRes.ok){

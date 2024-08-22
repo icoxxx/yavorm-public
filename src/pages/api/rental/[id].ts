@@ -11,6 +11,7 @@ import connectDB from '@/lib/connectMongo';
 import { createRouter, expressWrapper } from "next-connect";
 import cors from 'cors';
 import express from 'express';
+import { promisify } from 'util';
 
 
 // commented GridFS file upload as the app wont need it for now, keeping it if there will be large file uploads
@@ -27,6 +28,14 @@ function staticMiddleware(root: string) {
   };
 }
 
+const cacheControlMiddleware = (req: NextApiRequest, res: NextApiResponse, next: (err?: any) => void) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  next();
+};
+
 const storage = multer.diskStorage({
     destination: uploadPath,
     filename: (req, file, cb) => {
@@ -35,26 +44,16 @@ const storage = multer.diskStorage({
     }
   });
   
-  const upload = multer({ storage });
+const upload = multer({ storage });
 
-  const uploadMiddleware: RequestHandler = (req: any, res, next) => {
-    upload.single('image')(req, res, (err: any) => {
-      if (err) {
-        console.error('Error uploading file:', err);
-        return res.status(500).json({ success: false, message: 'Error uploading file' });
-      }
-      next(); // Call next to proceed to the next middleware or route handler
-    });
-  };
-
+const uploadMiddlewareAsync = promisify(upload.single('image'));
 
 // Middleware to ensure MongoDB connection is established
-const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => Promise<void>) => {
+const deleteAndPutwithDatabase = (handler: (req: NextApiRequest, res: NextApiResponse ) => Promise<void>) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       await connectDB();
-      //const database = await connectToDatabase();
-      await handler(req, res /*, database*/);
+      await handler(req, res);
     } catch (error) {
       console.error('Error connecting to database:', error);
       res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -122,12 +121,18 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
         } */
   
         // delete the old img from fs
-        fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', oldImage), (err) => {
-          if (err) {
-            console.error('Error deleting file from disk:', err);
-            return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
-          }
+        const unlinkAsync = promisify(fs.unlink);
+        try {
+          await unlinkAsync(path.join(process.cwd(), 'public', 'uploads', 'rental', oldImage));
           console.log('File deleted successfully from disk:', oldImage);
+        } catch (error:any) {
+          console.error('Error deleting file from disk:', error);
+          throw new Error('File deleting failed');
+        }
+        return res.status(200).json({
+          success: true,
+          item: updatedItem,
+          message: 'Item updated and file uploaded successfully!'
         });
         //upload the new img to GridFS
   
@@ -146,11 +151,6 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
             message: 'Item updated and file uploaded successfully!'
           });
         }); */
-        return res.status(200).json({
-          success: true,
-          item: updatedItem,
-          message: 'Item updated and file uploaded successfully!'
-        });
 
       } else {
         res.status(200).json({
@@ -159,9 +159,9 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
           message: 'Item updated successfully without changing the image!'
         });
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error('Error updating item:', error);
-      res.status(500).json({ success: false, message: 'Internal Server Error' });
+      throw new Error('Error updating item!');
     }
   };
   
@@ -182,19 +182,19 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
       }
   
       if (item.image) {
-        fs.unlink(path.join(process.cwd(), 'public', 'uploads', 'rental', item.image), (err) => {
-          if (err) {
-            console.error('Error deleting file from disk:', err);
-            return res.status(500).json({ success: false, message: 'Error deleting file from disk' });
-          }
+        const unlinkAsync = promisify(fs.unlink);
+        try {
+          await unlinkAsync(path.join(process.cwd(), 'public', 'uploads', 'rental', item.image));
           console.log('File deleted successfully from disk:', item.image);
-          
-          return res.status(200).json({
-            success: true,
-            message: 'Item and file deleted successfully!'
-          });
-        });
+        } catch (error:any) {
+          console.error('Error deleting file from disk:', error);
+          throw new Error('File deleting failed');
+        }
 
+        return res.status(200).json({
+          success: true,
+          message: 'Item and file deleted successfully!'
+        });
         /*const bucket = await getGridFSBucket();
         const files = await bucket.find({ filename: item.image }).toArray();
   
@@ -211,29 +211,32 @@ const updateItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
           message: 'Item deleted successfully without founding image file!'
         });
         }
-    } catch (error) {
+    } catch (error:any) {
       console.error('Error deleting item:', error);
-      res.status(500).json({ success: false, message: 'Internal Server Error' });
+      throw new Error('File deleting failed');
     }
   };
 
   const testIdRouter = createRouter<NextApiRequest, NextApiResponse>();
   testIdRouter.use(cors(corsOptions));
   testIdRouter.use('/uploads/rental', expressWrapper(staticMiddleware(uploadPath)));
+  testIdRouter.use(cacheControlMiddleware);
   testIdRouter.put(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
-
-      uploadMiddleware(req as any, res as any, async (err: any) => {
-          if (err) {
-            console.error('Error editing file:', err);
-            res.status(500).json({ success: false, message: 'Error uploading file' });
-            return;
-          }
-          await updateItem(req, res /*, db*/);
-         });
-
+    try {
+      await uploadMiddlewareAsync(req as any, res as any);
+      await updateItem(req, res);
+    } catch (error:any) {
+      console.error('Error editing file:', error);
+      res.status(500).json({ success: false, message: 'Error uploading file' });
+    }
   }));
   testIdRouter.delete(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
-    await deleteItem(req, res /*, db*/ );
+    try {
+      await deleteItem(req, res /*, db */ );
+    } catch (error:any) {
+      console.error('Error while deleting file:', error);
+      return res.status(500).json({ success: false, message: 'Error deleting file' });
+    }
   }))
 
   testIdRouter.get(deleteAndPutwithDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {

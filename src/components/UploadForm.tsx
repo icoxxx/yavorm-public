@@ -24,10 +24,10 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
   return (
     <form className="upload-form" id="upload-rental" onSubmit={handleForm}>
       <label htmlFor="itemName">Име/марка на продукта</label>
-      <input type="text" id="itemName" name="itemName" value={itemName} onChange={(e) => setItemName(e.target.value)} autoComplete="off" />
+      <input type="text" id="itemName" name="itemName" value={itemName} onChange={(e) => setItemName(e.target.value)} required autoComplete="off" />
 
       <label htmlFor="modelName">Модел</label>
-      <input type="text" id="modelName" name="modelName" value={modelName} onChange={(e) => setModelName(e.target.value)} autoComplete="off" />
+      <input type="text" id="modelName" name="modelName" value={modelName} onChange={(e) => setModelName(e.target.value)} required autoComplete="off" />
 
       <label htmlFor="rentalCategory">Категория</label>
       <select name="rentalCategory" id="rentalCategory" value={rentalCategory} onChange={(e) => setRentalCategory(e.target.value)} >
@@ -42,7 +42,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
       </select>
 
       <label htmlFor="description">Описание</label>
-      <input type="text" id="description" name="description" maxLength={80} value={description} onChange={handleDescriptionChange} autoComplete="off" />
+      <input type="text" id="description" name="description" maxLength={80} value={description} onChange={handleDescriptionChange} required autoComplete="off" />
 
       <label htmlFor="file">Снимка</label>
       <input type="file" id="file" name="file" accept="image/jpeg, image/png" onChange={handleFileChange} ref={fileInputRef} />
@@ -56,13 +56,13 @@ const BlogsForm: React.FC<any> = ({ blogTitle, setBlogTitle, blogAuthor, setBlog
   return (
     <form className="upload-form" id="upload-blog" onSubmit={handleForm}>
       <label htmlFor="blogTitle">Заглавие</label>
-      <input type="text" id="blogTitle" name="blogTitle" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} autoComplete="off" />
+      <input type="text" id="blogTitle" name="blogTitle" value={blogTitle} required onChange={(e) => setBlogTitle(e.target.value)} autoComplete="off" />
 
       <label htmlFor="blogAuthor">Автор</label>
-      <input type="text" id="blogAuthor" name="blogAuthor" value={blogAuthor} onChange={(e) => setBlogAuthor(e.target.value)} autoComplete="off" />
+      <input type="text" id="blogAuthor" name="blogAuthor" value={blogAuthor} required onChange={(e) => setBlogAuthor(e.target.value)} autoComplete="off" />
 
       <label htmlFor="blogText">Текст/Съдържание</label>
-      <textarea rows={15} id="blogText" name="blogText" value={blogText} onChange={(e) => setBlogText(e.target.value)} />
+      <textarea rows={15} id="blogText" name="blogText" value={blogText} required onChange={(e) => setBlogText(e.target.value)} />
 
       <label htmlFor="instaLink">Инстаграм пост</label>
       <input type="text" id="instaLink" name="instaLink" value={instaLink} onChange={(e) => setInstaLink(e.target.value)} autoComplete="off" /> 
@@ -82,7 +82,7 @@ const GalleryForm: React.FC<any> = ({ galleryName, setGalleryName, galleryFilesI
   return (
     <form className="upload-form" id="upload-gallery" onSubmit={handleForm}>
       <label htmlFor="galleryName">Име на галерия</label>
-      <input type="text" id="galleryName" name="galleryName" value={galleryName} onChange={(e) => setGalleryName(e.target.value)} autoComplete="off" />
+      <input type="text" id="galleryName" name="galleryName" value={galleryName} required onChange={(e) => setGalleryName(e.target.value)} autoComplete="off" />
 
       <label htmlFor="galleryFiles">Снимки - между 2 и 10 наведнъж</label>
       <input type="file" id="galleryFiles" name="galleryFiles" accept="image/jpeg, image/png" onChange={handleFileChange} ref={galleryFilesInputRef} multiple />

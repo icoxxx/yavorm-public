@@ -3,11 +3,21 @@
 .gallery-page-wrapper{
     position: relative;
     width: 100%;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    gap: 50px;
+    padding: 20px;
+    .gallery-hoc{
+        position: relative;
+        width: 100%;
+        padding: 50px 20px;
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 50px;
+        background-color: #2e2e2e;
+    }
+    .gallery-page-carousel-items{
+        padding: 0 10px;
+    }
     section{
         width: 100%;
     }
@@ -15,25 +25,26 @@
         button{
             z-index: 0 !important;
         }
-        background-color: #151030;
-        border-radius: 20px;
     }
     .gallery-name{
         text-align: center;
         font-family: 'Intro-Bold';
         text-transform: uppercase;
         margin-bottom: 10px;
+        color: white;
     }
     .gallery-carousel-items{
         position: relative;
         width: 100%;
         height: auto;
-        padding: 20px ;
+        padding: 15px ;
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
         justify-content: center;
         text-align: center;
+        background-color: #151030;
+        border-radius: 20px;
       }
       .gallery-carousel-img-container{
         position: relative;
@@ -95,5 +106,8 @@
 @media screen and (max-width: 600px) {
     .gallery-page-wrapper{
         padding: 20px;
+        .gallery-hoc{
+            padding: 20px 10px;
+        }
     }
 }

@@ -16,6 +16,8 @@ import Contacts from "@/components/Contacts";
 import { motion } from "framer-motion";
 import { BlogItem } from "@/store/blogItems/blogSlice";
 import {MdArrowForward} from 'react-icons/md';
+import { useIsLoginOpened } from "@/utils/LoginModalContext";
+import { useIsCanvas } from "@/utils/CanvasContext";
 
 type HomeProps = {
   title: string;
@@ -32,8 +34,8 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
   const slider = useRef<HTMLDivElement | null>(null);
   const firstText = useRef<HTMLParagraphElement | null>(null);
   const secondText = useRef<HTMLParagraphElement | null>(null);
-
-
+  const {isCanvas} = useIsCanvas();
+  
   useEffect(() => {
     setIsClient(true);
   }, [])
@@ -163,7 +165,7 @@ const HomePage: React.FunctionComponent<HomeProps> = ({title, description, image
                           <article key={`home-blog-${index}`} className="home-blog-container">
                               <div className="home-blog-img-container">
                                 {blog.image && (
-                                  <Image fill src={`/uploads/blogs/${blog.image}`} quality={100} alt="lala" />
+                                  <Image fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 350px, 350px" src={`/uploads/blogs/${blog.image}`} quality={100} alt="lala" />
                                 )}
                               </div>
                               <div className="home-blog-author-date"><p>{blog.blogAuthor}</p> <p>{formatDate(blog.date)}</p></div>

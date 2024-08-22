@@ -224,7 +224,10 @@ export default Rental;
 
 export const getServerSideProps: GetServerSideProps = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/rental');
+      const response = await fetch('http://localhost:3000/api/rental',{
+        method: 'GET',
+        cache: 'no-cache',
+      });
       if(!response.ok){
         throw new Error('Failed to fetch items');
       }

@@ -22,7 +22,7 @@ const GalleryImage = ({ src, alt }: { src: string, alt: string }) => {
 
     return (
       aspectRatioClass && (
-        <Image className={`gallery-carousel-img ${aspectRatioClass}`} fill src={src} quality={100} alt={alt} />
+        <Image className={`gallery-carousel-img ${aspectRatioClass}`} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw" src={src} quality={100} alt={alt} />
       )
     );
 };

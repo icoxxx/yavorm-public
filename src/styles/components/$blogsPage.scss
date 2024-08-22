@@ -15,7 +15,15 @@
 .blogs-page-wrapper{
     position: relative;
     width: 100%;
-    padding: 50px;
+    padding: 20px;
+}
+
+.blogs-page-hoc{
+    position: relative;
+    width: 100%;
+    background-color: #2e2e2e;
+    padding: 20px;
+    border-radius: 30px;
 }
 
 .blogs-flex-wrapper, .home-blogs-flex-wrapper{
@@ -155,11 +163,13 @@
 
 
 .pagination {
+    position: relative;
     margin-top: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
+    color: white;
   }
   
   .page-numb, .dots-numb {

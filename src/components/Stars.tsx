@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, {useEffect, useMemo, useRef } from 'react';
 import { Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial, Preload} from '@react-three/drei';
@@ -12,10 +12,11 @@ const Stars: React.FC<any> = (props) => {
     ref.current.rotation.x -= delta / 10;
     ref.current.rotation.y -= delta / 15;
   });
+
   
   return (
     <group rotation={[0, 0, Math.PI / 4]}>
-      <Points ref={ref} positions={sphere} stride={3} frustumCulled {...props}>
+      <Points ref={ref} positions={sphere!} stride={3} frustumCulled {...props}>
         <PointMaterial transparent color="#f272c8" size={0.002} sizeAttenuation={true} depthWrite={false} />
       </Points>
     </group>

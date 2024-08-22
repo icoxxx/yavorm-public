@@ -62,7 +62,7 @@ const Contacts:React.FC = ()=> {
         <div className="contact-container">
             <div className="contact-text-container">
                 <div className="contact-img-cover">
-                    <Image src={djEvent} quality={100} alt="dj-event" />
+                    <Image src={djEvent} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw" quality={100} alt="dj-event" />
                 </div>
                 <div className="contact-text-wrapper">
                     <div className="contact-text-title">

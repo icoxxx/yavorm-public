@@ -9,6 +9,7 @@ import connectDB from '@/lib/connectMongo';
 import { createRouter, expressWrapper } from "next-connect";
 import cors from 'cors';
 import express from 'express';
+import { promisify } from 'util';
 
 // commented GridFS file upload as the app wont need it for now, keeping it if there will be large file uploads
 
@@ -17,6 +18,14 @@ function staticMiddleware(root: string) {
     express.static(root)(req as any, res as any, next);
   };
 }
+
+const cacheControlMiddleware = (req: NextApiRequest, res: NextApiResponse, next: (err?: any) => void) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  next();
+};
 
 const uploadPath = path.join(process.cwd(), 'public', 'uploads', 'blogs');
 
@@ -36,17 +45,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const uploadMiddleware: RequestHandler = (req: any, res, next) => {
-    upload.single('image')(req, res, (err: any) => {
-      if (err) {
-        console.error('Error uploading file:', err);
-        return res.status(500).json({ success: false, message: 'Error uploading file' });
-      }
-      next(); // Call next to proceed to the next middleware or route handler
-    });
-  };
+const uploadMiddlewareAsync = promisify(upload.single('image'));
 
-// Middleware to ensure MongoDB connection is established
+// Middleware for MongoDB connection 
 const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => Promise<void>) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
@@ -60,7 +61,7 @@ const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse /*, db
   };
 };
 
-// Middleware to validate request body for POST and PUT requests
+// Middleware to validate request body for POST requests.
 const validateRequestBody = (req: NextApiRequest, res: NextApiResponse, next: () => void) => {
   const { blogTitle, blogText, blogAuthor } = req.body;
   if (!blogTitle || !blogText || !blogAuthor) {
@@ -126,32 +127,31 @@ const createItem = async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/
       });
     } */
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating item:', error);
-    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    throw new Error('Error creating item!');
   }
 };
 
 const blogRouter = createRouter<NextApiRequest, NextApiResponse>();
 blogRouter.use(cors(corsOptions));
 blogRouter.use('/uploads/blogs', expressWrapper(staticMiddleware(uploadPath)));
+blogRouter.use(cacheControlMiddleware);
 blogRouter.get(withDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     console.log('Handler reached for GET request');
    await getAllItems(req, res /* , db */);
   }));
 blogRouter.post(withDatabase(async (req: NextApiRequest, res: NextApiResponse /*, db: Db*/) => {
     console.log('Handler reached for POST request');
-    uploadMiddleware(req as any, res as any, async (err: any) => {
-      if (err) {
-        console.error('Error uploading file:', err);
-        res.status(500).json({ success: false, message: 'Error uploading file' });
-        return;
-      }
-      // Proceed with request body validation and item creation
-      validateRequestBody(req, res, () => {
-        createItem(req, res /* , db*/ );
+    try {
+      await uploadMiddlewareAsync(req as any, res as any);
+      validateRequestBody(req, res, async () => {
+       await createItem(req, res /* , db*/ );
       });
-    });
+    } catch (error:any) {
+      console.error('Error uploading/creating file:', error);
+      res.status(500).json({ success: false, message: 'Error creating file' });
+    }
   }));
 
 

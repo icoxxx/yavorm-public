@@ -6,7 +6,6 @@ import CanvasLoader from "./Loader";
 
 const Computers: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
   const { scene } = useGLTF("3dmodels/scene.gltf");
-
   return (
       <group>
         <hemisphereLight intensity={0.15} groundColor='black' />
@@ -57,21 +56,21 @@ const SpeakersCanvas: React.FC = () => {
 
   return (
     <Canvas
-      frameloop='demand'
-      dpr={[1, 2]}
-      camera={{ position: [0, 9, 3], fov: 35 }}
-      gl={{ preserveDrawingBuffer: true }}
-    >
-      <Suspense fallback={<CanvasLoader />}>
-      <OrbitControls
-        enableZoom={false}
-        maxPolarAngle={Math.PI / 2}
-        minPolarAngle={0}
-      />
-      <Computers isMobile={isMobile} />
-      </Suspense>
-      <Preload all />
-    </Canvas>
+        frameloop='demand'
+        dpr={[1, 2]}
+        camera={{ position: [0, 9, 3], fov: 35 }}
+        gl={{ preserveDrawingBuffer: true }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+        <OrbitControls
+          enableZoom={false}
+          maxPolarAngle={Math.PI / 2}
+          minPolarAngle={0}
+        />
+        <Computers isMobile={isMobile} />
+        </Suspense>
+        <Preload all />
+      </Canvas>
   );
 };
 

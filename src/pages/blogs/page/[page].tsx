@@ -167,20 +167,29 @@ const BlogsPage: React.FC <BlogPageProps> = ({title, description, imageUrl, blog
             <meta property="twitter:image" content={imageUrl} />
         </Head>
         <main className="blogs-page-wrapper">
-            <section style={{position: 'relative', width: '100%'}}>
-                <FadeIn key={currentPage} direction={fromLeft80} thresh={0} delay={0} className="blogs-flex-wrapper">
-                {storedBlogs && (
-                    storedBlogs.map((blog) => (
-                        <BlogCard key={blog._id} data={blog} editItem={editItem} setDeleteConfirm={setDeleteConfirm} setDeleteId={setDeleteId} returnPage={currentPage} />
-                    ))
-                )}
-                </FadeIn>
-            </section>
-            <div className="pagination">
-                <button className="prev-page-button" onClick={handlePrevPage} disabled={isPrevDisabled}><div className="left-arrow"></div></button>
-                <div className="pagination-numbers">{renderPageNumbers()}</div>
-                <button className="next-page-button" onClick={handleNextPage} disabled={isNextDisabled}><div className="right-arrow"></div></button>
-            </div>
+          <div className="blogs-page-hoc">
+                  <div className="lines">
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
+                   </div>
+              <section style={{position: 'relative', width: '100%'}}>
+                  <FadeIn key={currentPage} direction={fromLeft80} thresh={0} delay={0} className="blogs-flex-wrapper">
+                  {storedBlogs && (
+                      storedBlogs.map((blog) => (
+                          <BlogCard key={blog._id} data={blog} editItem={editItem} setDeleteConfirm={setDeleteConfirm} setDeleteId={setDeleteId} returnPage={currentPage} />
+                      ))
+                  )}
+                  </FadeIn>
+              </section>
+              <div className="pagination">
+                  <button className="prev-page-button" onClick={handlePrevPage} disabled={isPrevDisabled}><div className="left-arrow"></div></button>
+                  <div className="pagination-numbers">{renderPageNumbers()}</div>
+                  <button className="next-page-button" onClick={handleNextPage} disabled={isNextDisabled}><div className="right-arrow"></div></button>
+              </div>
+          </div>
         </main>
         {deleteConfirm && (
            <DeleteModal setDeleteConfirm={setDeleteConfirm} handleDelete={handleDelete} />
@@ -193,7 +202,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         const { page = 1 } = context.query;
 
-        const res = await fetch(`http://localhost:3000/api/blogs?page=${page}&limit=5`);
+        const res = await fetch(`http://localhost:3000/api/blogs?page=${page}&limit=5`,{
+          method: 'GET',
+          cache: 'no-cache',
+        });
         if(!res.ok){
             throw new Error('Failed to fetch items');
           }

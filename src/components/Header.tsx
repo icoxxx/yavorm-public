@@ -9,6 +9,9 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import logo from '../assets/images/Yavor-M-logo-color.svg';
 import useScrollToContacts from '@/utils/useScrollToContacts';
+import { BiLogIn } from 'react-icons/bi';
+import { FaUserShield, FaShoppingCart, FaBlogger, FaImages, FaHome, FaEnvelope } from 'react-icons/fa';
+import { useIsCanvas } from '@/utils/CanvasContext';
 
 const Header: React.FC = ()=> {
     const [isMenuOpen, setIsMenuOPen] = useState<boolean | undefined>(undefined);
@@ -19,6 +22,7 @@ const Header: React.FC = ()=> {
     const [isInitial, setIsInitial] = useState(true);
     const router = useRouter();
     const scrollToContacts = useScrollToContacts();
+    const {isCanvas, setIsCanvas} = useIsCanvas();
     
     useEffect(() => {
         setIsClient(true);
@@ -58,6 +62,7 @@ const Header: React.FC = ()=> {
         else{
             window.removeEventListener("resize", handleResize);
         }
+        setIsCanvas(isMenuOpen)
       }, [isMenuOpen]);
     
       useEffect(() => {
@@ -71,13 +76,13 @@ const Header: React.FC = ()=> {
       }, [windowWidth]);
     
     const navLinks = [
-        {text: 'HOME', color: "#f44336", link: '/'},
-        {text: 'CONTACT', color: "#9c27b0", link: ''},
-        {text: 'RENTAL', color: "#e91e63", link: '/rental'},
-        {text: 'BLOGS', color: '#673ab7', link: '/blogs/page/1'},
-        {text: 'GALLERY', color: '#3f51b5', link: '/gallery'},
-        {text: 'LOGIN', color: '#05a89b', link: ''},
-        {text: 'ADMIN', color: '#158c4f', link: '/admin'},
+        {text: 'HOME', color: "#f44336", link: '/', icon: <FaHome className='hidden-icons'/>},
+        {text: 'CONTACT', color: "#9c27b0", link: '', icon: <FaEnvelope className='hidden-icons'/>},
+        {text: 'RENTAL', color: "#e91e63", link: '/rental', icon: <FaShoppingCart className='hidden-icons'/>},
+        {text: 'BLOGS', color: '#673ab7', link: '/blogs/page/1', icon: <FaBlogger className='hidden-icons'/>},
+        {text: 'GALLERY', color: '#3f51b5', link: '/gallery', icon: <FaImages className='hidden-icons'/>},
+        {text: 'LOGIN', color: '#05a89b', link: '', icon: <BiLogIn className='hidden-icons'/>},
+        {text: 'ADMIN', color: '#158c4f', link: '/admin', icon: <FaUserShield className='hidden-icons'/>},
       ];
 
     const $root:any = useRef();
@@ -135,8 +140,8 @@ const Header: React.FC = ()=> {
       
     return(
     <header className="header-container">
-        <nav onAnimationEnd={openLoginFromHidden} className={`hidden-menu ${isMenuOpen === undefined ? "" : (isMenuOpen ? "hidden-active" : "hidden-inactive")}`}>
-          <StarsCanvas/>
+        <nav onTransitionEnd={openLoginFromHidden} className={`hidden-menu ${isMenuOpen === undefined ? "" : (isMenuOpen ? "hidden-active" : "hidden-inactive")}`}>
+          {isMenuOpen && (<StarsCanvas/>)}
           {navLinks.map((navLink, index)=>
             navLink.text !== 'CONTACT' 
             ?
@@ -153,6 +158,7 @@ const Header: React.FC = ()=> {
             key={`${index}-${navLink.text}`} 
             href={navLink.link}
             >
+              {navLink.icon}
               {
               navLink.text !== 'LOGIN'
               ?
@@ -169,7 +175,7 @@ const Header: React.FC = ()=> {
             }, 100);}}
             key={`${index}-${navLink.text}`} 
             >
-              {navLink.text}
+              {navLink.icon} {navLink.text}
             </div> 
           )}
         </nav>

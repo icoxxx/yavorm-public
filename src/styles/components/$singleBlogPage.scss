@@ -1,7 +1,14 @@
 .single-blog-page-wrapper{
     position: relative;
     width: 100%;
+    padding: 20px;
+}
+.single-blog-hoc{
+    position: relative;
+    width: 100%;
     padding: 50px;
+    background-color: #2e2e2e;
+    border-radius: 30px;
     .single-blog-wrapper{
         position: relative;
         width: 100%;
@@ -198,9 +205,11 @@
 }
 
 @media screen and (max-width: 780px){
-    .single-blog-page-wrapper{
-        padding: 20px;
+.single-blog-page-wrapper{
+        padding: 10px 0px;
     }
+.single-blog-hoc{
+    padding: 10px;
     .single-blog-wrapper{
         position: relative;
         width: 100%;
@@ -226,6 +235,7 @@
     }
  }
 }
+}
 
 @media screen and (max-width: 500px) {
     .single-blog-container{
@@ -233,12 +243,13 @@
     }
     .single-blog-data{
         h1{
-            margin-bottom: 10px !important;
-            font-size: 15px;
+            margin-top: 10px !important;
+            margin-bottom: 15px !important;
+            font-size: 15px !important;
         }
     }
     .single-blog-author-date{
-        font-size: 14px;
+        font-size: 14px !important;
     }
 }
 

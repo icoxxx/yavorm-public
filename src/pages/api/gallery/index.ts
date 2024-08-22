@@ -6,6 +6,7 @@ import path from 'path';
 import express, { RequestHandler } from 'express';
 import connectDB from '@/lib/connectMongo';
 import GalleryItem from '@/Models/GallerySchema';
+import { promisify } from 'util';
 
 
 // Extending NextApiRequest to include files property
@@ -19,6 +20,14 @@ function staticMiddleware(root: string) {
     express.static(root)(req as any, res as any, next);
   };
 }
+
+const cacheControlMiddleware = (req: NextApiRequest, res: NextApiResponse, next: (err?: any) => void) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  next();
+};
 
 // Directory for uploads
 const uploadPath = path.join(process.cwd(), 'public', 'uploads', 'gallery');
@@ -41,7 +50,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Middleware for multiple file upload
-const uploadMiddleware: RequestHandler = (req, res, next) => {
+
+/* const uploadMiddleware: RequestHandler = (req, res, next) => {
   upload.array('images', 10)(req, res, (err: any) => {
     if (err) {
       console.error('Error uploading files:', err);
@@ -49,7 +59,9 @@ const uploadMiddleware: RequestHandler = (req, res, next) => {
     }
     next();
   });
-};
+}; */
+
+const uploadMiddlewareAsync = promisify(upload.array('images', 10));
 
 // Middleware to connect to MongoDB
 const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse) => Promise<void>) => {
@@ -67,7 +79,6 @@ const withDatabase = (handler: (req: NextApiRequest, res: NextApiResponse) => Pr
 // Get all gallery items
 const getAllItems = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-
     const items = await GalleryItem.find().sort({ date: -1 });
 
     return res.status(200).json({ items });
@@ -90,9 +101,9 @@ const createItem = async (req: NextApiRequestWithFiles, res: NextApiResponse) =>
       item: newItem,
       message: 'Gallery item created successfully!',
     });
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error creating item:', error);
-    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    throw new Error('Update failed');
   }
 };
 
@@ -101,19 +112,17 @@ const galleryRouter = createRouter<NextApiRequest, NextApiResponse>();
 
 galleryRouter.use(cors(corsOptions));
 galleryRouter.use('/uploads/gallery', expressWrapper(staticMiddleware(uploadPath)));
+galleryRouter.use(cacheControlMiddleware);
 galleryRouter.get(withDatabase(getAllItems));
 galleryRouter.post(withDatabase(async (req: NextApiRequestWithFiles, res: NextApiResponse /*, db: Db*/ ) => {
     console.log('Handler reached for POST request');
-    uploadMiddleware(req as any, res as any, async (err: any) => {
-      if (err) {
-        console.error('Error uploading file:', err);
-        res.status(500).json({ success: false, message: 'Error uploading file' });
-        return;
-      }
-      // Proceed with request body validation and item creation
-       await createItem(req, res);
-      console.log('YAAYAYAYYYAYAYAYAYAYYA')
-    });
+    try {
+      await uploadMiddlewareAsync(req as any, res as any);
+      await createItem(req, res);
+    } catch (error: any) {
+      console.error('Error handling POST request:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
   }));
 
 export const config = {

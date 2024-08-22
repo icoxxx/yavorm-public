@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import FadeIn from "@/components/FadeIn";
 import { fromLeft } from "@/utils/animationVariants";
 import { updateBlogItem } from "@/store/blogItems/blogSlice";
+import { updateGalleryItem } from "@/store/galleryItems/gallerySlice";
 
 const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDescription, modelName, setModelName, rentalCategory, setRentalCategory, fileInputRef, handleFileChange, handleForm, placeholder }) => {
   return (
@@ -33,7 +34,7 @@ const RentalForm: React.FC<any> = ({ itemName, setItemName, description, setDesc
 
 
       <label htmlFor="description">Описание</label>
-      <input type="text" id="description" name="description" value={description} placeholder={placeholder.description} onChange={(e) => setDescription(e.target.value)} autoComplete="on" />
+      <input type="text" id="description" name="description" maxLength={80} value={description} placeholder={placeholder.description} onChange={setDescription} autoComplete="on" />
 
       <label htmlFor="file">Снимка</label>
       <input type="file" id="file" name="file" accept="image/jpeg, image/png" onChange={handleFileChange} ref={fileInputRef} />
@@ -145,6 +146,13 @@ const EditPage: React.FunctionComponent = () => {
       }
     }
 
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (value.length <= 80) {
+        setDescription(value);
+      }
+    };
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const fileList = e.target.files;
@@ -200,6 +208,7 @@ const EditPage: React.FunctionComponent = () => {
           ////////////
           itemsToEdit[0].category === 'rental' && (dispatch(updateItem(updatedItem)));
           itemsToEdit[0].category === 'blogs' && (dispatch(updateBlogItem(updatedItem)));
+          itemsToEdit[0].category === 'gallery' && (dispatch(updateGalleryItem(updatedItem)))
           ////////////
 
           setItemName("");
@@ -269,7 +278,7 @@ const EditPage: React.FunctionComponent = () => {
                 itemName={itemName}
                 setItemName={setItemName}
                 description={description}
-                setDescription={setDescription}
+                setDescription={handleDescriptionChange}
                 modelName={modelName}
                 setModelName={setModelName}
                 rentalCategory={rentalCategory}

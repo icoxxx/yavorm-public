@@ -10,26 +10,29 @@ import Header from "@/components/Header";
 import { IsLoginOpenedProvider } from "@/utils/LoginModalContext";
 import { CategoryProvider } from "@/utils/RentalCategoryContext";
 import Footer from "@/components/Footer";
+import { IsCanvasProvider } from "@/utils/CanvasContext";
 
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
 
     <GoogleReCaptchaProvider
-    reCaptchaKey="6LcbzxAqAAAAAGah0A9cflnTBqN1vSitIbq8Kfs2"
+    reCaptchaKey="6Lf-0ikqAAAAAHX1ye-fVVKmLSHZCvhTZ-mA1SDf"
     >
       <Provider store={store}>
         <IsLoginOpenedProvider>
           <AuthProvider>
-            <CategoryProvider>
-              <ItemsToEditProvider>
-                  <UploadProvider>
-                        <Header/>
-                        <Component {...pageProps} />
-                        <Footer/>
-                  </UploadProvider>
-                </ItemsToEditProvider>
-            </CategoryProvider>
+            <IsCanvasProvider>
+              <CategoryProvider>
+                <ItemsToEditProvider>
+                    <UploadProvider>
+                          <Header/>
+                          <Component {...pageProps} />
+                          <Footer/>
+                    </UploadProvider>
+                  </ItemsToEditProvider>
+              </CategoryProvider>
+            </IsCanvasProvider>
           </AuthProvider>
         </IsLoginOpenedProvider>
       </Provider>

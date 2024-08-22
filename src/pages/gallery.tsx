@@ -1,4 +1,4 @@
-import { GalleryItem } from "@/store/galleryItems/gallerySlice";
+import { GalleryItem, removeGalleryItem, setGalleryItems } from "@/store/galleryItems/gallerySlice";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -9,6 +9,11 @@ import FadeIn from "@/components/FadeIn";
 import { fromLeft80, fromRight80 } from "@/utils/animationVariants";
 import GalleryImage from "@/components/GalleryImage";
 import Head from "next/head";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { useItemsToEdit } from "@/utils/EditContext";
+import GalleryCarousel from "@/components/GalleryCarousel";
+import DeleteModal from "@/components/DeleteModal";
 
 type GalleryPageProps = {
     title: string;
@@ -21,27 +26,69 @@ const GalleryPage: React.FC<GalleryPageProps> = ({title, description, imageUrl, 
     const [isModalOpened, setIsModalOpened] = useState(false);
     const [openedImage, setOpenedImage] = useState('');
     const [isClient, setIsClient] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
+    const { itemsToEdit, setItemsToEdit } = useItemsToEdit();
 
     useEffect(()=> {
         setIsClient(true)
     },[])
 
-    useEffect(()=> {
-        if(isClient){
-            const body = document.body;
-            if(isModalOpened){
-                body.style.position = 'fixed';
-                body.style.top = `-${window.scrollY}px`;
-                body.style.width = '100%';
-            }
-            else{
-                const scrollY = body.style.top;
-                body.style.position = '';
-                body.style.top = '';
-                window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            }
-        }
-    },[isModalOpened])
+    useEffect(() => {
+      dispatch(setGalleryItems(galleryItems));
+    }, [dispatch, galleryItems]);
+
+    const storedGalleryItems = useSelector((state: RootState) => state.gallery.items);
+    
+    useEffect(() => {
+      if (isClient) {
+          const body = document.body;
+  
+          if (isModalOpened) {
+              const scrollY = window.scrollY;
+              body.style.position = 'fixed';
+              body.style.top = `-${scrollY}px`;
+              body.style.width = '100%';
+          } else {
+              const scrollY = parseInt(body.style.top || '0') * -1;
+              body.style.position = '';
+              body.style.top = '';
+              window.scrollTo(0, scrollY);
+          }
+      }
+  }, [isModalOpened]);
+
+    const editItem = async (itemId? : string, galleryName?: string, images?: string[], category?: string, redirectPath?: string) => {
+        const newItemToEdit: any = {
+          itemId: itemId,
+          galleryName: galleryName,
+          images: images,
+          category: category,
+          redirectPath: redirectPath,
+        };
+        setItemsToEdit(() => [newItemToEdit]);
+      }
+
+      const handleDelete = async ()=> {
+        try {
+           const response = await fetch(`http://localhost:3000/api/gallery/${deleteId}`, {
+             method: 'DELETE',
+             headers: {
+               'Content-Type': 'application/json',
+             }
+           });
+           if (response.ok) {
+            dispatch(removeGalleryItem(deleteId));
+            setDeleteConfirm(false); // Close the confirmation modal
+           }
+           else if(!response.ok){
+             throw new Error('Failed to delete item');
+           }
+         } catch (error:any) {
+           console.log(`Error: ${error}`)
+         } 
+       }
 
     return (
         <>
@@ -60,93 +107,54 @@ const GalleryPage: React.FC<GalleryPageProps> = ({title, description, imageUrl, 
             <meta property="twitter:description" content={description} />
             <meta property="twitter:image" content={imageUrl} />
         </Head>
-        <div className="gallery-page-wrapper">
-            {galleryItems && galleryItems.length > 0 && (
-             galleryItems.map((gallery, index)=> {
-                return(
-                <FadeIn direction={index % 2 === 0 ? fromLeft80 : fromRight80} delay={0.3} thresh={0.1} key={`gallery-section-${index}`} className="gallery-carousel-wrapper">
-                    <div className="gallery-name">{gallery.galleryName}</div>
-                    <Carousel
-                        additionalTransfrom={0}
-                        arrows
-                        autoPlaySpeed={3000}
-                        centerMode={false}
-                        containerClass="home-carousel-container"
-                        draggable
-                        focusOnSelect={false}
-                        infinite
-                        keyBoardControl
-                        minimumTouchDrag={80}
-                        pauseOnHover
-                        renderArrowsWhenDisabled={false}
-                        renderButtonGroupOutside={false}
-                        renderDotsOutside={false}
-                        responsive={{
-                            desktop: {
-                            breakpoint: {
-                                max: 3000,
-                                min: 1024
-                            },
-                            items: 2,
-                            },
-                            mobile: {
-                            breakpoint: {
-                                max: 600,
-                                min: 0
-                            },
-                            items: 1,
-                            },
-                            tablet: {
-                            breakpoint: {
-                                max: 1024,
-                                min: 600
-                            },
-                            items: 2,
-                            }
-                        }}
-                        rewind={false}
-                        rewindWithAnimation={false}
-                        rtl={false}
-                        shouldResetAutoplay
-                        showDots={false}
-                        sliderClass=""
-                        slidesToSlide={1}
-                        swipeable
-                        ssr
-                        partialVisbile={false}
-                        >
-                            {gallery.images && gallery.images.length > 0 && (
-                            gallery.images.map((image, index)=> {
-                             return(
-                                <div onClick={()=> (setIsModalOpened(true), setOpenedImage(image))} key={`image-${index}`} className="gallery-carousel-items">
-                                    <div className="gallery-carousel-img-container">
-                                        <GalleryImage src={`/uploads/gallery/${image}`} alt={`${gallery.galleryName}-image`} />
-                                    </div>
-                                </div>
-                             )
-                            })
-                            )}
-                    </Carousel>
-                </FadeIn>
-                )
-             })
-            )}
-            <div className={`modal ${isModalOpened ? 'is-open' : ''}`}>
-                <div className="opened-image-container">
-                    {isModalOpened && (<div className="close-image" onClick={()=> setIsModalOpened(false)} ><Image src={close} width={50} height={50} alt="close" /></div>)}
-                    {openedImage && isModalOpened && (
-                        <Image className="opened-image" quality={100} fill src={`/uploads/gallery/${openedImage}`} alt={`gallery-image`} />
-                    )}
-                </div>
+        <main className="gallery-page-wrapper">
+          <div className="gallery-hoc">
+            <div className="lines">
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
+                          <div className="line"></div>
             </div>
-        </div>
+            {storedGalleryItems && storedGalleryItems.length > 0 && (
+              storedGalleryItems.map((gallery, index)=> {
+                  return(
+                      <GalleryCarousel
+                          key={`gallery-section-${index}`}
+                          galleryItem={gallery}
+                          index={index}
+                          setDeleteConfirm={setDeleteConfirm}
+                          setDeleteId={setDeleteId}
+                          editItem={editItem}
+                          setIsModalOpened={setIsModalOpened}
+                          setOpenedImage={setOpenedImage}
+                      />
+                  )
+              })
+              )}
+              <div className={`modal ${isModalOpened ? 'is-open' : ''}`}>
+                  <div className="opened-image-container">
+                      {isModalOpened && (<div className="close-image" onClick={()=> setIsModalOpened(false)} ><Image src={close} width={50} height={50} alt="close" /></div>)}
+                      {openedImage && isModalOpened && (
+                          <Image className="opened-image" quality={100} fill src={`/uploads/gallery/${openedImage}`} alt={`gallery-image`} />
+                      )}
+                  </div>
+              </div>
+          </div>
+        </main>
+        {deleteConfirm && (
+           <DeleteModal setDeleteConfirm={setDeleteConfirm} handleDelete={handleDelete} />
+          )}  
         </>
     );
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/gallery');
+      const response = await fetch('http://localhost:3000/api/gallery',{
+        method: 'GET',
+        cache: 'no-cache',
+      });
       if(!response.ok){
         throw new Error('Failed to fetch items');
       }
